@@ -1,1 +1,44 @@
+# Laravel / PHP
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+/.env
+/.idea
+/.vscode
+.phpunit.result.cache
+Homestead.yaml
+Homestead.json
+.env.local
+.env.*.local
+.phpstorm.meta.php
+
+# Laravel Mix / NPM / Yarn
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+package-lock.json
+yarn.lock
+
+# Docker / local development
+docker-compose.override.yml
 *.zip
+*.tar.gz
+tmp/
+.DS_Store
+Thumbs.db
+
+# Laravel logs & cache
+/storage/logs/*
+/storage/framework/cache/data/*
+/bootstrap/cache/*.php
+
+# Optional: ignore IDE/editor project files
+*.sublime-project
+*.sublime-workspace
+*.idea/
+*.vscode/
+
+# Optional: ignore composer files that are regenerated
+composer.lock
+
