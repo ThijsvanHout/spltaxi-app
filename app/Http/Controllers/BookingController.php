@@ -411,7 +411,7 @@ $bookings = Booking::select('bookings.*',
 		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		$companies = Company::all();
-		$chauffeur = DriverBooking::where('booking_id', $booking->id)->value('driver_id');	
+		$chauffeur = DriverBooking::where('id', $booking->assign_id)->value('driver_id');	
         return view('layouts.editbookings', ['booking' => $booking, 
 											 'companies' => $companies,
 											 'chauffeur' => $chauffeur,
@@ -1682,7 +1682,7 @@ $bookings = Booking::select('bookings.*',
 		$booking = Booking::find($id);
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		$companies = Company::all();
-		$chauffeur = DriverBooking::where('booking_id', $booking->id)->value('driver_id');
+		$chauffeur = DriverBooking::where('id', $booking->assign_id)->value('driver_id');
 		
 		$driver = Driver::find($chauffeur);
 		$pickupDate = \Carbon\Carbon::parse($booking->pickup_date);
