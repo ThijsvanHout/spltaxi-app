@@ -23,6 +23,24 @@
         display: flex;
     }
 
+    #booking-buttons {
+        position: sticky;
+        top: 0; /* blijft plakken zodra je scrollt naar de tabel */
+        background: white;
+        z-index: 10;
+        padding: 10px 0;
+    }
+
+    /* Tabel header sticky onder de knoppen */
+    
+
+    .table-container table thead tr {
+        position: sticky;
+        top: 60px;  /* hoogte van de buttons-spl div */
+        background: white;
+        z-index: 5; /* minder dan knoppen zodat knoppen boven blijven */
+    }
+
     .form-container {
         flex: 1;
         padding: 20px;
@@ -32,6 +50,8 @@
         flex: 1;
         padding: 20px;
     }
+
+    
 
     .modal {
         display: none;
@@ -75,16 +95,17 @@
     }
 
 	.header-container {
-            display: flex;
-            justify-content: flex-end; /* Zorgt ervoor dat alles naar rechts gaat */
-            align-items: center; /* Verticaal gecentreerd */
-            padding: 10px;
-        }
+        display: flex;
+        justify-content: flex-end; /* Zorgt ervoor dat alles naar rechts gaat */
+        align-items: center; /* Verticaal gecentreerd */
+        padding: 10px;
+    }
 
-        .header-container .item {
-            margin-left: 20px; /* Ruimte tussen de items */
-        }
+    .header-container .item {
+        margin-left: 20px; /* Ruimte tussen de items */
+    }
 
+    
     table {
 
         border-collapse: collapse;
@@ -309,9 +330,12 @@
 /* Desktop view */
 @media (min-width: 768px) {
     #book {
-    width: 75%;
-    margin-left: 30px;
-  }
+        width: 75%;
+        margin-left: 30px;    
+    }
+    .table-container table thead tr {
+        top: 90px; /* iPhone / smaller screen */
+    }
 }
 
 </style>
@@ -354,7 +378,7 @@
         <!-- Table Container -->
         <div class="table-container">
             <h2>Active Bookings</h2>&nbsp;
-            <div class="buttons-spl" style="display:flex;">
+            <div class="buttons-spl" id="booking-buttons" style="display:flex;" >
 				@if (Auth::guard('admin')->check()) 
 					@if (Auth::guard('admin')->user()->role === "Admin")
 						<a class="mr-4" href="{{ url('/admin') }}" style="font-size:45px;padding : 10px 0px 10px 0px; color:red;">
@@ -372,7 +396,7 @@
 				<a href="{{ url('/admin/bookings') }}"><button class="btn-grad">Active Bookings</button></a>
                 <a href="{{ route('completedbookings') }}"><button class="btn-grad">Older Bookings</button></a>
 				<a href="{{ route('onaccountnewbookings') }}"><button class="btn-grad">On Account</button></a>				
-         </div>
+            </div>
 
 
             {{-- {{ $bookings }} --}}
@@ -922,6 +946,10 @@
 	
 			$(".edit-booking").click(function(event) {
 				event.preventDefault();
+
+                // Scrollpositie opslaan in localStorage
+                localStorage.setItem('scrollBookings', window.scrollY);
+
 				//var url = $(this).attr('href');
 				var bookingId = $(this).data('booking-id');
         		var url = "/admin/bookings/" + bookingId + "/edit";
@@ -1224,6 +1252,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log(bookingId, "=====wewewew")
                 $('#myModal #booking_id').val(bookingId);
             });
+        });
+    </script>
+    <script>
+        window.addEventListener('load', function() {
+            const pos = localStorage.getItem('scrollBookings');
+            if(pos) {
+                window.scrollTo(0, pos);
+                localStorage.removeItem('scrollBookings');
+            }
         });
     </script>
 
