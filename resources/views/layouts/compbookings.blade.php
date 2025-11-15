@@ -1141,9 +1141,13 @@
 		
 		$(".edit-booking").click(function(event) {
 				event.preventDefault();
-				//var url = $(this).attr('href');
+				
+				localStorage.setItem('scrollBookings', window.scrollY);
+                localStorage.setItem('activeCompleted', 'Completed');
+
 				var bookingId = $(this).data('booking-id');
-        		var url = "/admin/bookings/" + bookingId + "/edit";
+        		
+				var url = "/admin/bookings/" + bookingId + "/edit?tab=completed";
 				$("#example5").hide();
 				$("#addbooking-section").hide();
 				$("#returnbooking-section").hide();	
@@ -1429,7 +1433,17 @@ document.addEventListener("DOMContentLoaded", function() {
 			
 			
         });
-</script>
+	</script>
+	<script>
+        window.addEventListener('load', function() {
+            const pos = localStorage.getItem('scrollBookings');
+            const active = localStorage.getItem('activeCompleted');
+            if(active === 'Completed' && pos) {
+                window.scrollTo(0, pos);
+                localStorage.removeItem('scrollBookings');
+            }
+        });
+    </script>
 
 
 

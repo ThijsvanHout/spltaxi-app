@@ -168,7 +168,10 @@
 		<br />
 		<div class="row" >
 			<div>
-				<button class="btn btn-primary"><a href="{{ url('/admin/bookings') }}" style="color:white;">Cancel</a></button>
+				@php
+
+				@endphp
+				<button class="btn btn-primary"><a href="#" id="cancel-btn" style="color:white;">Cancel</a></button>
 				<button type="submit" class="btn btn-primary">Update</button>
 			</div>
 		</div>	
@@ -247,4 +250,20 @@
                 }
             });
         }
+
+		
     </script>
+	<script>
+		$(document).on("click", "#cancel-btn", function (event) {
+			event.preventDefault();
+
+			let tab = localStorage.getItem('activeCompleted');
+			
+			if (tab === "Completed") {
+				window.location.href = "/admin/completed-bookings";
+			} else {
+				window.location.href = "/admin/bookings";
+			}
+		});
+
+	</script>

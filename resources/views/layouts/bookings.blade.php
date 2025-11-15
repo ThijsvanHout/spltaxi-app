@@ -949,10 +949,11 @@
 
                 // Scrollpositie opslaan in localStorage
                 localStorage.setItem('scrollBookings', window.scrollY);
-
+                localStorage.setItem('activeCompleted', 'Active');
 				//var url = $(this).attr('href');
 				var bookingId = $(this).data('booking-id');
-        		var url = "/admin/bookings/" + bookingId + "/edit";
+        		                
+                var url = "/admin/bookings/" + bookingId + "/edit?tab=active";
 				$("#example5").hide();
 				$("#addbooking-section").hide();
 				$("#returnbooking-section").hide();				
@@ -1257,7 +1258,8 @@ document.addEventListener("DOMContentLoaded", function() {
     <script>
         window.addEventListener('load', function() {
             const pos = localStorage.getItem('scrollBookings');
-            if(pos) {
+            const active = localStorage.getItem('activeCompleted');
+            if(active === 'Active' && pos) {
                 window.scrollTo(0, pos);
                 localStorage.removeItem('scrollBookings');
             }
@@ -1268,3 +1270,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
 @endsection
 
+ 
