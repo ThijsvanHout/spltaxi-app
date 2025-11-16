@@ -20,21 +20,21 @@ use Illuminate\Support\Arr;
 
 class BookingController extends Controller
 {
-	
-	
-    public function index()
-    {
-        $yesterday = Carbon::yesterday();
-        $datetoday = $yesterday->toDateString();
-        // $bookings = Booking::all();
-        /*  $bookings = Booking::select('bookings.*', 'drivers.name as driver_name')
+
+
+	public function index()
+	{
+		$yesterday = Carbon::yesterday();
+		$datetoday = $yesterday->toDateString();
+		// $bookings = Booking::all();
+		/*  $bookings = Booking::select('bookings.*', 'drivers.name as driver_name')
               ->leftJoin('driver_booking', 'bookings.id', '=', 'driver_booking.booking_id')
               ->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
               ->where('pickup_date', '>', $datetoday)
               ->orderBy('pickup_date', 'ASC')
               ->orderBy('pickup_time', 'ASC')
               ->get(); */
-/*
+		/*
 $bookings = Booking::select('bookings.*', 
                                   'drivers.name as driver_name', 
                                   'bookings.pickup_date as date', 
@@ -52,20 +52,22 @@ $bookings = Booking::select('bookings.*',
     ->orderBy('bookings.pickup_date', 'ASC')
     ->orderBy('bookings.pickup_time', 'ASC')
     ->get(); */
-$bookings = Booking::select('bookings.*', 
-                            'drivers.name as driver_name', 
-							'drivers.phone as driver_phone', 
-                            'bookings.pickup_date as date', 
-                            'bookings.pickup_time as time')
-    ->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-    ->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-    ->where('bookings.pickup_date', '>', $datetoday)
-    ->where('bookings.status', '<>', 'Completed')
-	->orderBy('bookings.pickup_date', 'ASC')
-    ->orderBy('bookings.pickup_time', 'ASC')
-    ->get();
+		$bookings = Booking::select(
+			'bookings.*',
+			'drivers.name as driver_name',
+			'drivers.phone as driver_phone',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time'
+		)
+			->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+			->where('bookings.pickup_date', '>', $datetoday)
+			->where('bookings.status', '<>', 'Completed')
+			->orderBy('bookings.pickup_date', 'ASC')
+			->orderBy('bookings.pickup_time', 'ASC')
+			->get();
 
-		
+
 		/*
         $pickupBookings = Booking::select('bookings.*', 'drivers.name as driver_name', 'bookings.pickup_date as date', 'bookings.pickup_time as time')
             ->leftJoin('driver_booking', 'bookings.id', '=', 'driver_booking.booking_id')
@@ -85,110 +87,109 @@ $bookings = Booking::select('bookings.*',
             ->orderBy('time', 'ASC')
             ->get();
 */
-        //$drivers = Driver::all();
+		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
-		
-		$companies = Company::all();		
-		
 
-        //  print_r($bookings);
-        return view('layouts.bookings', ['bookings' => $bookings, 'drivers' => $drivers, 'companies' => $companies]);
-    }
-    public function create()
-    {				
-        return view('layouts.addbookings');
-    }
-	
+		$companies = Company::all();
+
+
+		//  print_r($bookings);
+		return view('layouts.bookings', ['bookings' => $bookings, 'drivers' => $drivers, 'companies' => $companies]);
+	}
+	public function create()
+	{
+		return view('layouts.addbookings');
+	}
+
 	public function adminstore(Request $request)
-    {		
-        $bookings = new Booking();
-        $bookings->name = $request['uname'];
-        $bookings->email = $request['email'];
-        $bookings->phone = $request['mobile'];
+	{
+		$bookings = new Booking();
+		$bookings->name = $request['uname'];
+		$bookings->email = $request['email'];
+		$bookings->phone = $request['mobile'];
 		$bookings->company = $request['company'];
 
-        $bookings->pickup_address = $request['pickup_address'];
-		if (strpos(strtolower($request['pickup_address']), 'schiphol') !== false){	
+		$bookings->pickup_address = $request['pickup_address'];
+		if (strpos(strtolower($request['pickup_address']), 'schiphol') !== false) {
 			$bookings->house_no_from = $request['flight_no'];
 		} else {
 			$bookings->house_no_from = $request['house_no_from'];
 		}
-        $bookings->destination = $request['to'];
-        $bookings->house_no_to = $request['house_no_to'];
+		$bookings->destination = $request['to'];
+		$bookings->house_no_to = $request['house_no_to'];
 
-        $bookings->pickup_date = $request['pickup_date'];
-        $bookings->pickup_time = $request['pickup_time'];
+		$bookings->pickup_date = $request['pickup_date'];
+		$bookings->pickup_time = $request['pickup_time'];
 
 
-        $bookings->press = $request['press'];
-        $bookings->luggage = $request['luggage'];
-        $bookings->vehicle = $request['vehicle'];
-     	$bookings->price = $request['price'] ?? '';
+		$bookings->press = $request['press'];
+		$bookings->luggage = $request['luggage'];
+		$bookings->vehicle = $request['vehicle'];
+		$bookings->price = $request['price'] ?? '';
 		$bookings->price1 = $request['price1'] ?? '';
 
 
-        $bookings->mode = $request['mode'];
-        $bookings->km = $request['km'];
-        $bookings->min = $request['min'];
-		
-        $bookings->remark = $request['remark'];
+		$bookings->mode = $request['mode'];
+		$bookings->km = $request['km'];
+		$bookings->min = $request['min'];
+
+		$bookings->remark = $request['remark'];
 		/*if (strpos(strtolower($request['pickup_address']), 'schiphol') !== false){
 			$bookings->flight_no_on_return = $request['flight_no'];
 		}*/
 
-        $bookings->return_flight = $request['return'];
+		$bookings->return_flight = $request['return'];
 
 
-        if ($request['return'] === 'Yes') {
+		if ($request['return'] === 'Yes') {
 			$bookings->date_return_flight = $request['flight_date'];
 			$bookings->time_return_flight = $request['flight_time'];
 			$bookings->flight_no_on_return = $request['flight_no_on_return'];
-            $returnbookings = new Booking();
-            $returnbookings->name = $request['uname'];
-            $returnbookings->email = $request['email'];
-            $returnbookings->phone = $request['mobile'];			
+			$returnbookings = new Booking();
+			$returnbookings->name = $request['uname'];
+			$returnbookings->email = $request['email'];
+			$returnbookings->phone = $request['mobile'];
 			$returnbookings->company = $request['company'];
-            $returnbookings->pickup_address = $request['to'];
-			if (strpos(strtolower($request['to']), 'schiphol') !== false){
+			$returnbookings->pickup_address = $request['to'];
+			if (strpos(strtolower($request['to']), 'schiphol') !== false) {
 				$returnbookings->house_no_from = $request['flight_no_on_return'];
-			}
-			else {
+			} else {
 				$returnbookings->house_no_from = $request['house_no_to'];
 			}
-            $returnbookings->destination = $request['pickup_address'];
-            $returnbookings->house_no_to = $request['house_no_from'];
-            $returnbookings->pickup_date = $request['flight_date'];
-            $returnbookings->pickup_time = $request['flight_time'];
-			if ($request['flight_no_on_return']){
+			$returnbookings->destination = $request['pickup_address'];
+			$returnbookings->house_no_to = $request['house_no_from'];
+			$returnbookings->pickup_date = $request['flight_date'];
+			$returnbookings->pickup_time = $request['flight_time'];
+			if ($request['flight_no_on_return']) {
 				$returnbookings->flight_no_on_return = $request['flight_no_on_return'];
-			} 
-            $returnbookings->press = $request['press'];
-            $returnbookings->luggage = $request['luggage'];
-            $returnbookings->vehicle = $request['vehicle'];
-          	$returnbookings->price = $request['price'] ?? '';
+			}
+			$returnbookings->press = $request['press'];
+			$returnbookings->luggage = $request['luggage'];
+			$returnbookings->vehicle = $request['vehicle'];
+			$returnbookings->price = $request['price'] ?? '';
 			$returnbookings->price1 = $request['price1'] ?? '';
-            
-            $returnbookings->mode = $request['mode'];
-            $returnbookings->km = $request['km'];
-            $returnbookings->min = $request['min'];
-       
-            $returnbookings->remark = $request['returnremark'];
-			
-			
-            $returnbookings->save();
-            $bookings->return_id = $returnbookings->id;
-	
-            $bookings->save();
-        } else {
-            $bookings->save();
-        }
-		
+
+			$returnbookings->mode = $request['mode'];
+			$returnbookings->km = $request['km'];
+			$returnbookings->min = $request['min'];
+
+			$returnbookings->remark = $request['returnremark'];
+
+
+			$returnbookings->save();
+			$bookings->return_id = $returnbookings->id;
+
+			$bookings->save();
+		} else {
+			$bookings->save();
+		}
+
 		/*$bookingDetails = $request->all();*/
 		$bookingDetails = $request->except(['price1']);
-        Mail::to($request->input('email'))->cc('info@spl.taxi')->send(new BookingConfirmation($bookingDetails));
-        Session::flash('success', 'Booking created successfully!');
-				
-	/*	if ($request['driver_id'] !== null){			
+		Mail::to($request->input('email'))->cc('info@spl.taxi')->send(new BookingConfirmation($bookingDetails));
+		Session::flash('success', 'Booking created successfully!');
+
+		/*	if ($request['driver_id'] !== null){			
 			$driverBooking = DriverBooking::create([
 				'driver_id' => (int) $request->driver_id,
 				'booking_id' => $bookings->id,
@@ -216,31 +217,30 @@ $bookings = Booking::select('bookings.*',
 					'booking_id' => $bookings->id,
 					'status' => 'Pending'
 				]);
-				
+
 				// koppeling naar booking pas zetten bij nieuwe aanmaak
 				$bookings->status = 'Assigned';
 				$bookings->assign_id = $driverBooking->id;
-				$bookings->save();							
+				$bookings->save();
 			});
-			
+
 			Session::flash('success', 'Driver assigned successfully');
-			return redirect()->route('bookings.index');	
-		}
-		else {
+			return redirect()->route('bookings.index');
+		} else {
 			return redirect()->route('bookings.index');
 		}
-		
-		
-         /*return redirect()->back(); */
-		/*return redirect ("https://www.spl.taxi");*/
-    }
 
-    public function store(Request $request)
-    {
-        session_start();
+
+		/*return redirect()->back(); */
+		/*return redirect ("https://www.spl.taxi");*/
+	}
+
+	public function store(Request $request)
+	{
+		session_start();
 
 		if ($_SERVER["REQUEST_METHOD"] == "POST") {
-			
+
 			$captcha = $_POST["captcha"];
 
 			// Controleer of de CAPTCHA in de sessie staat
@@ -250,12 +250,12 @@ $bookings = Booking::select('bookings.*',
 
 			// Controleer het antwoord
 			if ($captcha == $_SESSION['captcha_antwoord']) {
-				
-			
+
+
 				$bookings = new Booking();
 				$bookings->name = $request['uname'];
 				$bookings->email = $request['email'];
-				$bookings->phone = $request['mobile'];		
+				$bookings->phone = $request['mobile'];
 				$bookings->company = $request['company'];
 
 				$bookings->pickup_address = $request['pickup_address'];
@@ -278,48 +278,47 @@ $bookings = Booking::select('bookings.*',
 
 						// Plaats is het tweede element (index 1)
 						$plaats = trim($delen[1]); // Opsplitsen op komma
-						
-						if (str_contains($plaats, 'Ouderkerk')){
+
+						if (str_contains($plaats, 'Ouderkerk')) {
 							$plaats = 'Ouderkerk';
 						}
 
 						$price = Prices_per_city::whereRaw('LOWER(plaats) = ?', [strtolower($plaats)])->first();
-					}
-					else {
+					} else {
 						// Opsplitsen op komma
 						$delen = explode(',', $bookings->pickup_address);
 
 						// Plaats is het tweede element (index 1)
 						$plaats = trim($delen[1]); // Opsplitsen op komma
-						
-						if (str_contains($plaats, 'Ouderkerk')){
+
+						if (str_contains($plaats, 'Ouderkerk')) {
 							$plaats = 'Ouderkerk';
 						}
 
 						$price = Prices_per_city::whereRaw('LOWER(plaats) = ?', [strtolower($plaats)])->first();
 					}
 
-					if ($price){
-						switch($bookings->vehicle){
-							case 'Sedan' :
+					if ($price) {
+						switch ($bookings->vehicle) {
+							case 'Sedan':
 								$bookings->price = $price->sedan;
 								break;
-							case 'Stationwagen' :
+							case 'Stationwagen':
 								$bookings->price = $price->station;
 								break;
-							case 'Bus4' :
-							case 'Bus5' :
-							case 'Bus6' :
+							case 'Bus4':
+							case 'Bus5':
+							case 'Bus6':
 								$bookings->price = $price->bus_6;
 								break;
-							case 'Bus7' :
-							case 'Bus8' :
+							case 'Bus7':
+							case 'Bus8':
 								$bookings->price = $price->bus_8;
 								break;
 						}
-					} 
-				} 
-								
+					}
+				}
+
 				$bookings->price1 = $request['price1'] ?? '';
 
 				$bookings->mode = $request['mode'];
@@ -329,7 +328,7 @@ $bookings = Booking::select('bookings.*',
 
 
 				$bookings->remark = $request['remark'];
-				if (strpos(strtolower($request['pickup_address']), 'schiphol') !== false){
+				if (strpos(strtolower($request['pickup_address']), 'schiphol') !== false) {
 					$bookings->flight_no_on_return = $request['house_no_from'];
 				}
 
@@ -372,7 +371,7 @@ $bookings = Booking::select('bookings.*',
 
 				/*$bookingDetails = $request->all();*/
 				$bookingDetails = $request->except(['price1']);
-				if ($bookings->price){
+				if ($bookings->price) {
 					$bookingDetails['price'] = $bookings->price;
 				}
 				Mail::to($request->input('email'))->cc('info@spl.taxi')->send(new BookingConfirmation($bookingDetails));
@@ -382,62 +381,63 @@ $bookings = Booking::select('bookings.*',
 
 				// Controleer of de referentie-URL overeenkomt met de verwachte URL
 				if ($referer && strpos($referer, 'https://reserve.spl.taxi/admin/') !== false) {
-					return redirect()->route('bookings.index');            
-				} 		
-				else {	
+					return redirect()->route('bookings.index');
+				} else {
 					if ($request['return'] === 'Yes') {
 						return view('frontend.intermediate', ['booking' => $bookings, 'returnbooking' => $returnbookings])->with('message', 'Booking created successfully!');
-					}
-					else {
+					} else {
 						return view('frontend.intermediate', ['booking' => $bookings])->with('message', 'Booking created successfully!');
 					}
 					//return redirect ("https://www.spl.taxi");
-				}	
-		} else {
+				}
+			} else {
 				echo "Fout: CAPTCHA is incorrect. Probeer opnieuw.";
-			}	
+			}
 
 			// Verwijder de CAPTCHA uit de sessie om hergebruik te voorkomen
 			unset($_SESSION['captcha_antwoord']);
 		}
 
 		/*return redirect()->route('bookings.index');*/
-         /*return redirect()->back(); */
+		/*return redirect()->back(); */
 		/*return redirect ("https://www.spl.taxi");*/
-    }
+	}
 
-    public function edit(Booking $booking)
-    {
+	public function edit(Booking $booking)
+	{
 		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		$companies = Company::all();
-		$chauffeur = DriverBooking::where('booking_id', $booking->id)->value('driver_id');	
-        return view('layouts.editbookings', ['booking' => $booking, 
-											 'companies' => $companies,
-											 'chauffeur' => $chauffeur,
-											 'drivers' => $drivers]);
-    }
-	
-	public function copy2(Booking $booking, $id){
+		$chauffeur = DriverBooking::where('id', $booking->assign_id)->value('driver_id');
+		return view('layouts.editbookings', [
+			'booking' => $booking,
+			'companies' => $companies,
+			'chauffeur' => $chauffeur,
+			'drivers' => $drivers
+		]);
+	}
+
+	public function copy2(Booking $booking, $id)
+	{
 		$booking = Booking::find($id);
 		$companies = Company::all();
 		$drivers = Driver::all();
-        return view('layouts.copybookings', ['booking' => $booking, 'companies' => $companies, 'drivers' => $drivers]);
-    }
-	
+		return view('layouts.copybookings', ['booking' => $booking, 'companies' => $companies, 'drivers' => $drivers]);
+	}
+
 	public function retFlight(Booking $booking, $id)
-    {
+	{
 		$booking = Booking::find($id);
 		$companies = Company::all();
 		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
-        return view('layouts.addreturnbookings', ['booking' => $booking, 'companies' => $companies, 'drivers' => $drivers]);
-    }
-	
+		return view('layouts.addreturnbookings', ['booking' => $booking, 'companies' => $companies, 'drivers' => $drivers]);
+	}
+
 	public function filter(Request $request)
 	{
 		$yesterday = Carbon::yesterday();
-        $datetoday = $yesterday->toDateString();
+		$datetoday = $yesterday->toDateString();
 		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		info('request');
@@ -452,9 +452,9 @@ $bookings = Booking::select('bookings.*',
 		$selectedChauffeur = json_decode($chauffeur, true)['name'];
 		info('$selectedChauffeur');
 		info($selectedChauffeur);*/
-		if (is_null($chauffeurId)){
+		if (is_null($chauffeurId)) {
 			$yesterday = Carbon::yesterday();
-        	$datetoday = $yesterday->toDateString();
+			$datetoday = $yesterday->toDateString();
 			$bookings = Booking::select('bookings')
 				->select('bookings.*', 'drivers.name as driver_name', 'bookings.pickup_date as date', 'bookings.pickup_time as time')
 				->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
@@ -467,28 +467,28 @@ $bookings = Booking::select('bookings.*',
 				->orderBy('bookings.pickup_date', 'DESC')
 				->orderBy('bookings.pickup_time', 'DESC')
 				->get();
-			
-		}
-		else {
-			$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-			->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-			->where('bookings.pickup_date', '<=', $datetoday)
-			->where('bookings.status', '<>', 'Completed')
-			->where("driver_booking.driver_id", "=", $chauffeurId )
-			->orderBy('bookings.pickup_date', 'DESC')
-			->orderBy('bookings.pickup_time', 'DESC')
-			->get();
+		} else {
+			$bookings = Booking::select(
+				'bookings.*',
+				'drivers.name as driver_name',
+				'drivers.phone as driver_phone',
+				'bookings.pickup_date as date',
+				'bookings.pickup_time as time'
+			)
+				->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+				->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+				->where('bookings.pickup_date', '<=', $datetoday)
+				->where('bookings.status', '<>', 'Completed')
+				->where("driver_booking.driver_id", "=", $chauffeurId)
+				->orderBy('bookings.pickup_date', 'DESC')
+				->orderBy('bookings.pickup_time', 'DESC')
+				->get();
 		}
 
-		
-		
-			
-			/*$bookings = Booking::leftJoin('driver_booking', function ($join) use ($chauffeurId) {
+
+
+
+		/*$bookings = Booking::leftJoin('driver_booking', function ($join) use ($chauffeurId) {
 			$join->on('bookings.id', '=', 'driver_booking.booking_id');
 			
 				 
@@ -501,651 +501,723 @@ $bookings = Booking::select('bookings.*',
 			$query->where('driver_id', $chauffeurId);
 		})->get();*/
 		//$bookings = Booking::where('booking.driver_name', $driverName)->get();
-				
+
 		return view('layouts.compbookings', compact('drivers', 'bookings'));
 	}
-	
+
 	public function filterPeriod(Request $request)
 	{
 		$twoMonthsAgo = Carbon::now()->subMonths(2)->toDateString();
 		$yesterday = Carbon::yesterday();
-        $datetoday = $yesterday->toDateString();
+		$datetoday = $yesterday->toDateString();
 		$chauffeurId = $request->input('chauffeur');
 		$onAccount = $request->input('onaccount');
 		$company = $request->input('company');
-		
+
 		$naam = $request->input('naam');
 		$naam = strtolower(trim($naam));
 
 		$adres = $request->input('adres');
 		$adres = strtolower(trim($adres));
-		
+
 		$telnr = $request->input('telnr');
 		$telnr = $telnr = preg_replace('/\D/', '', $telnr);
-				
+
 		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		$companies = Company::all();
-					
+
 		$from = $request->input('from');
 		$till = $request->input('till');
-		
-		switch (true){
-			case $naam && $from	:
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')	
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->whereRaw('LOWER(bookings.name) like ?', ["%{$naam}%"]) 							
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
-					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				}
-				break;
-			case $adres && $from	:
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')	
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->whereRaw('LOWER(bookings.pickup_address) LIKE ?', ["%{$adres}%"])
-                        	->orWhereRaw('LOWER(bookings.destination) LIKE ?', ["%{$adres}%"])					
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
-					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				}
-				break;
-			case $telnr && $from	:
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')	
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->whereRaw('REGEXP_REPLACE(bookings.phone, "[^0-9]", "") LIKE ?', ["%{$telnr}%"])
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
-					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name',
-								'drivers.phone as driver_phone', 
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				}
-				break;
-			case $naam :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
+
+		switch (true) {
+			case $naam && $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
 					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')    
-					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
 					->where('bookings.pickup_date', '<=', $datetoday)
-					->whereRaw('LOWER(bookings.name) like ?', ["%{$naam}%"])                                                        
+					->whereRaw('LOWER(bookings.name) like ?', ["%{$naam}%"])
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
 					->orderBy('bookings.pickup_date', 'DESC')
 					->orderBy('bookings.pickup_time', 'DESC')
 					->get();
-		
-				if ($bookings->isEmpty()) {				
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 												
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $adres :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')	
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->whereRaw('LOWER(bookings.pickup_address) LIKE ?', ["%{$adres}%"])
-                        	->orWhereRaw('LOWER(bookings.destination) LIKE ?', ["%{$adres}%"])
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $adres && $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->whereRaw('LOWER(bookings.pickup_address) LIKE ?', ["%{$adres}%"])
+					->orWhereRaw('LOWER(bookings.destination) LIKE ?', ["%{$adres}%"])
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				}
-				break;	
-			case $telnr :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name',
-								'drivers.phone as driver_phone', 
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')								
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->whereRaw('REGEXP_REPLACE(bookings.phone, "[^0-9]", "") LIKE ?', ["%{$telnr}%"])
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
-					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				}
-				break; 
-			case $chauffeurId && $onAccount && $from	:
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')	
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->where("driver_booking.driver_id", "=", $chauffeurId )
-							->where("bookings.mode", "=", 'On Account' )
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
-					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name',
-								'drivers.phone as driver_phone', 
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $company && $onAccount && $from	:
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->where("bookings.company", "=", $company )
-							->where("bookings.mode", "=", 'On Account' )
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $telnr && $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->whereRaw('REGEXP_REPLACE(bookings.phone, "[^0-9]", "") LIKE ?', ["%{$telnr}%"])
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $chauffeurId && $from :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->where("driver_booking.driver_id", "=", $chauffeurId )			
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();	
-				if ($bookings->isEmpty()) {				
+			case $naam:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->whereRaw('LOWER(bookings.name) like ?', ["%{$naam}%"])
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $company && $from :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '<=', $datetoday)					
-							->where("bookings.company", "=", $company )										
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();	
-				if ($bookings->isEmpty()) {				
+			case $adres:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->whereRaw('LOWER(bookings.pickup_address) LIKE ?', ["%{$adres}%"])
+					->orWhereRaw('LOWER(bookings.destination) LIKE ?', ["%{$adres}%"])
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $chauffeurId && $onAccount :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->where("driver_booking.driver_id", "=", $chauffeurId )
-							->where("bookings.mode", "=", 'On Account' )							
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $telnr:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->whereRaw('REGEXP_REPLACE(bookings.phone, "[^0-9]", "") LIKE ?', ["%{$telnr}%"])
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $company && $onAccount :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)					
-							->where("bookings.company", "=", $company )	
-							->where("bookings.mode", "=", 'On Account' )							
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $chauffeurId && $onAccount && $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("driver_booking.driver_id", "=", $chauffeurId)
+					->where("bookings.mode", "=", 'On Account')
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name',
-								'drivers.phone as driver_phone', 
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $onAccount && $from :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '<=', $datetoday)					
-							->where("bookings.mode", "=", 'On Account' )
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $company && $onAccount && $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("bookings.company", "=", $company)
+					->where("bookings.mode", "=", 'On Account')
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $chauffeurId :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->where("driver_booking.driver_id", "=", $chauffeurId )							
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $chauffeurId && $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("driver_booking.driver_id", "=", $chauffeurId)
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $company :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'bookings.pickup_date as date', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)
-							->where("bookings.company", "=", $company )							
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $company && $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("bookings.company", "=", $company)
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $onAccount :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')					
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)					
-							->where("bookings.mode", "=", 'On Account' )							
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $chauffeurId && $onAccount:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("driver_booking.driver_id", "=", $chauffeurId)
+					->where("bookings.mode", "=", 'On Account')
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
 				break;
-			case $from :
-				$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '<=', $datetoday)					
-							->where('bookings.pickup_date', '>=', $from )
-							->where('bookings.pickup_date', '<=', $till)
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
-				if ($bookings->isEmpty()) {				
+			case $company && $onAccount:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("bookings.company", "=", $company)
+					->where("bookings.mode", "=", 'On Account')
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
 					echo "Geen boekingen gevonden.";
-					$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
-							->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-							->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-							->where('bookings.pickup_date', '>=', $twoMonthsAgo)
-							->where('bookings.pickup_date', '<=', $datetoday)			
-							->orderBy('bookings.pickup_date', 'DESC')
-							->orderBy('bookings.pickup_time', 'DESC')
-							->get();
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
 				}
-				break;	
+				break;
+			case $onAccount && $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("bookings.mode", "=", 'On Account')
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
+					echo "Geen boekingen gevonden.";
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
+				}
+				break;
+			case $chauffeurId:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("driver_booking.driver_id", "=", $chauffeurId)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
+					echo "Geen boekingen gevonden.";
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
+				}
+				break;
+			case $company:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'bookings.pickup_date as date',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("bookings.company", "=", $company)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
+					echo "Geen boekingen gevonden.";
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
+				}
+				break;
+			case $onAccount:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where("bookings.mode", "=", 'On Account')
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
+					echo "Geen boekingen gevonden.";
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
+				}
+				break;
+			case $from:
+				$bookings = Booking::select(
+					'bookings.*',
+					'drivers.name as driver_name',
+					'drivers.phone as driver_phone',
+					'bookings.pickup_date as date',
+					'bookings.pickup_time as time'
+				)
+					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+					->where('bookings.pickup_date', '<=', $datetoday)
+					->where('bookings.pickup_date', '>=', $from)
+					->where('bookings.pickup_date', '<=', $till)
+					->orderBy('bookings.pickup_date', 'DESC')
+					->orderBy('bookings.pickup_time', 'DESC')
+					->get();
+				if ($bookings->isEmpty()) {
+					echo "Geen boekingen gevonden.";
+					$bookings = Booking::select(
+						'bookings.*',
+						'drivers.name as driver_name',
+						'drivers.phone as driver_phone',
+						'bookings.pickup_date as date',
+						'bookings.pickup_time as time'
+					)
+						->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+						->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+						->where('bookings.pickup_date', '>=', $twoMonthsAgo)
+						->where('bookings.pickup_date', '<=', $datetoday)
+						->orderBy('bookings.pickup_date', 'DESC')
+						->orderBy('bookings.pickup_time', 'DESC')
+						->get();
+				}
+				break;
 		}
-					
-		return view('layouts.compbookings', compact('drivers', 'companies', 'bookings' ));
+
+		return view('layouts.compbookings', compact('drivers', 'companies', 'bookings'));
 	}
 
 	public function onaccountNew()
 	{
 		$yesterday = Carbon::yesterday();
-        $datetoday = $yesterday->toDateString();
+		$datetoday = $yesterday->toDateString();
 		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		$companies = Company::all();
 
-		$bookings = Booking::select('bookings.*', 
-                            'drivers.name as driver_name', 
-							'drivers.phone as driver_phone',
-                            'bookings.pickup_date as date', 
-                            'bookings.pickup_time as time')
-					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
-					->where('bookings.pickup_date', '>', $datetoday)
-					->where('bookings.status', '<>', 'Completed')
-					->where("bookings.mode", "=", 'On Account' )
-					->orderBy('bookings.pickup_date', 'ASC')
-					->orderBy('bookings.pickup_time', 'ASC')
-					->get();
-							
-	
+		$bookings = Booking::select(
+			'bookings.*',
+			'drivers.name as driver_name',
+			'drivers.phone as driver_phone',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time'
+		)
+			->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+			->where('bookings.pickup_date', '>', $datetoday)
+			->where('bookings.status', '<>', 'Completed')
+			->where("bookings.mode", "=", 'On Account')
+			->orderBy('bookings.pickup_date', 'ASC')
+			->orderBy('bookings.pickup_time', 'ASC')
+			->get();
+
+
 		return view('layouts.bookings', compact('drivers', 'companies', 'bookings'));
 	}
 
-	
+
 	public function onaccountCompleted()
 	{
 		$yesterday = Carbon::yesterday();
-        $datetoday = $yesterday->toDateString();
+		$datetoday = $yesterday->toDateString();
 		$drivers = Driver::all();
-				
-		$bookings = Booking::select('bookings.*', 
-								'drivers.name as driver_name', 
-								'drivers.phone as driver_phone',
-								'bookings.pickup_date as date', 
-								'bookings.pickup_time as time')
+
+		$bookings = Booking::select(
+			'bookings.*',
+			'drivers.name as driver_name',
+			'drivers.phone as driver_phone',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time'
+		)
 			->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
 			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
 			->where('bookings.pickup_date', '<=', $datetoday)
 			->where('bookings.status', '<>', 'Completed')
-			->where("bookings.mode", "=", 'On Account' )
+			->where("bookings.mode", "=", 'On Account')
 			->orderBy('bookings.pickup_date', 'DESC')
 			->orderBy('bookings.pickup_time', 'DESC')
-			->get();						
-				
+			->get();
+
 		return view('layouts.compbookings', compact('drivers', 'bookings'));
 	}
 
-	
 
-    public function update(Request $request)
-    {
-        $booking = Booking::findOrFail($request->id);
 
-        // Update the fields with new values from the request
-        $booking->name = $request->input('uname');
-        $booking->email = $request->input('email');
-        $booking->phone = $request->input('mobile');
+	public function update(Request $request)
+	{
+		$booking = Booking::findOrFail($request->id);
+
+		// Update the fields with new values from the request
+		$booking->name = $request->input('uname');
+		$booking->email = $request->input('email');
+		$booking->phone = $request->input('mobile');
 		$booking->company = $request->input('company');
-        $booking->remark = $request->input('remark');
-        $booking->press = $request->input('from1');
-        $booking->house_no_from = $request->input('house_no_from');
-        $booking->destination = $request->input('to');
-        $booking->house_no_to = $request->input('house_no_to');
-        $booking->price = $request->input('price');
-        $booking->price1 = $request->input('price1');
-        $booking->mode = $request->input('mode');
-        $booking->km = $request->input('km');
-        $booking->min = $request->input('min');
-        $booking->customer = $request->input('customer');
-      
-        $booking->pickup_address = $request->input('pickup_address');
-        $booking->pickup_date = $request->input('pickup_date');
-        $booking->pickup_time = $request->input('pickup_time');
-        $booking->return_flight = $request->input('return');
-        $booking->time_return_flight = $request->input('flight_time');
-        $booking->date_return_flight = $request->input('flight_date');
-        $booking->press = $request->input('press');
-        $booking->luggage = $request->input('luggage');
-        $booking->vehicle = $request->input('vehicle');
-		
+		$booking->remark = $request->input('remark');
+		$booking->press = $request->input('from1');
+		$booking->house_no_from = $request->input('house_no_from');
+		$booking->destination = $request->input('to');
+		$booking->house_no_to = $request->input('house_no_to');
+		$booking->price = $request->input('price');
+		$booking->price1 = $request->input('price1');
+		$booking->mode = $request->input('mode');
+		$booking->km = $request->input('km');
+		$booking->min = $request->input('min');
+		$booking->customer = $request->input('customer');
+
+		$booking->pickup_address = $request->input('pickup_address');
+		$booking->pickup_date = $request->input('pickup_date');
+		$booking->pickup_time = $request->input('pickup_time');
+		$booking->return_flight = $request->input('return');
+		$booking->time_return_flight = $request->input('flight_time');
+		$booking->date_return_flight = $request->input('flight_date');
+		$booking->press = $request->input('press');
+		$booking->luggage = $request->input('luggage');
+		$booking->vehicle = $request->input('vehicle');
+
 		//driver ingevuld, nnieuw of update
-	/*	if ($request->input('driver_id') !== null){	
+		/*	if ($request->input('driver_id') !== null){	
 			$driverBooking = DriverBooking::where('booking_id', $request->id)->first();
 			if ($driverBooking) {
 				$driverBooking->driver_id = (int) $request->driver_id;
@@ -1164,7 +1236,7 @@ $bookings = Booking::select('bookings.*',
 				}
 			}			
 		} */
-		
+
 		if ($request->filled('driver_id')) {
 
 			DB::transaction(function () use ($request, $booking) {
@@ -1176,7 +1248,6 @@ $bookings = Booking::select('bookings.*',
 					// Alleen de driver_id aanpassen
 					$driverBooking->driver_id = (int) $request->driver_id;
 					$driverBooking->save();
-
 				} else {
 					// Nieuwe driver_booking aanmaken
 					$driverBooking = DriverBooking::create([
@@ -1195,44 +1266,46 @@ $bookings = Booking::select('bookings.*',
 				// alles commit pas samen, dus dit is 100% veilig.
 			});
 		}
-        	
-        		
-        // Save the updated booking
-        $booking->save();
 
-        Session::flash('success', 'Booking Updated successfully!');
+
+		// Save the updated booking
+		$booking->save();
+
+		Session::flash('success', 'Booking Updated successfully!');
 
 		$tab = $request->query('tab');  // 'active' of 'completed'
 
 		if ($tab === 'completed') {
-			 return redirect()->route('completed-bookings.index');
+			return redirect()->route('completed-bookings.index');
 		}
 
 
-        return redirect()->route('bookings.index');
-    }
+		return redirect()->route('bookings.index');
+	}
 
-    public function destroy(Booking $booking)
-    {
-        $booking->delete();
-        Session::flash('success', 'Deleted successfully!');
-        return redirect()->route('bookings.index');
-    }
+	public function destroy(Booking $booking)
+	{
+		$booking->delete();
+		Session::flash('success', 'Deleted successfully!');
+		return redirect()->route('bookings.index');
+	}
 
 
-    public function completedBookings()
-    {
+	public function completedBookings()
+	{
 		$twoMonthsAgo = Carbon::now()->subMonths(2)->toDateString();
-        $yesterday = Carbon::yesterday();
-        $datetoday = $yesterday->toDateString();
+		$yesterday = Carbon::yesterday();
+		$datetoday = $yesterday->toDateString();
 		$bookings = Booking::select('bookings')
-			->select('bookings.*', 
-					 'drivers.name as driver_name',
-					 'drivers.phone as driver_phone',  
-					 'bookings.pickup_date as date', 
-					 'bookings.pickup_time as time')
+			->select(
+				'bookings.*',
+				'drivers.name as driver_name',
+				'drivers.phone as driver_phone',
+				'bookings.pickup_date as date',
+				'bookings.pickup_time as time'
+			)
 			->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')						
+			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
 			->where('bookings.pickup_date', '>=', $twoMonthsAgo)
 			->where('bookings.pickup_date', '<=', $datetoday)
 			->orWhere(function ($query) use ($datetoday) { // Include 'use ($datetoday)' here
@@ -1242,134 +1315,132 @@ $bookings = Booking::select('bookings.*',
 			->orderBy('bookings.pickup_date', 'DESC')
 			->orderBy('bookings.pickup_time', 'DESC')
 			->get();
-        //$drivers = Driver::all();
+		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		$companies = Company::all();
-        return view('layouts.compbookings', ['bookings' => $bookings, 'drivers' => $drivers, 'companies' => $companies]);
-    }
+		return view('layouts.compbookings', ['bookings' => $bookings, 'drivers' => $drivers, 'companies' => $companies]);
+	}
 
-    function bookingStatus(Request $request){
-       
+	function bookingStatus(Request $request)
+	{
 
-        if (isset($request->booking_id)) {
-            // Retrieve the booking and update its status and driver_id
-            $booking = Booking::findOrFail($request->booking_id);
-            $booking->status = 'Completed';
-            $booking->save();
-            // Session::flash('success', 'Booking Completed Succssfully');
+
+		if (isset($request->booking_id)) {
+			// Retrieve the booking and update its status and driver_id
+			$booking = Booking::findOrFail($request->booking_id);
+			$booking->status = 'Completed';
+			$booking->save();
+			// Session::flash('success', 'Booking Completed Succssfully');
 			return response()->json(['success' => 'Booking Completed Succssfully'], 200);
-        } else {
-            // Session::flash('success', 'Failed to Complete the Booking');
+		} else {
+			// Session::flash('success', 'Failed to Complete the Booking');
 			return response()->json(['failed' => 'Failed to Complete the Booking'], 200);
-            
-        }
+		}
+	}
 
-
-    }
-	
 	public function showUserReceipt($id)
-    {
+	{
 		$prices = Prices_per_city::all();
-		
-        $booking = Booking::select('bookings.*',                             
-                            'bookings.pickup_date as date', 
-                            'bookings.pickup_time as time')
-        ->where('bookings.id', '=', $id)       
-        ->first();
-        return view('frontend.userreceipt', compact('booking'));
-    }
-	
+
+		$booking = Booking::select(
+			'bookings.*',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time'
+		)
+			->where('bookings.id', '=', $id)
+			->first();
+		return view('frontend.userreceipt', compact('booking'));
+	}
+
 	public function userReceiptMail($request)
-    {
-        $booking->name = $request->input('name');
+	{
+		$booking->name = $request->input('name');
 		$booking->pickup_address = $request->input('pickup_address');
 		$booking->destination = $request->input('destination');
 		$booking->press = $request->input('press');
 		$booking->pickup_date = $request->input('pickup_date');
 		$booking->pickup_time = $request->input('pickup_time');
 		$booking->price1 = $request_input('price1');
-		
+
 		try {
-		Mail::send('layouts.userreceiptemail', ['booking' => $booking], function($message) use ($request) {
-			$message->to($request->input('email'))
-				    ->cc('info@spl.taxi')
+			Mail::send('layouts.userreceiptemail', ['booking' => $booking], function ($message) use ($request) {
+				$message->to($request->input('email'))
+					->cc('info@spl.taxi')
 					->attachData($docxContent, 'receipt.docx', [
-                    	'mime' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                	])
+						'mime' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+					])
 					->subject('Booking receipt');
-		});
+			});
 
-		return redirect('/admin/bookings')
-        ->with('success', 'Booking receipt is verzonden!');  //redirect naar url /admin/bookings
-		}catch (\Exception $e) {
-        // Log het probleem
-        Log::error('❌ Mailfout: ' . $e->getMessage());
+			return redirect('/admin/bookings')
+				->with('success', 'Booking receipt is verzonden!');  //redirect naar url /admin/bookings
+		} catch (\Exception $e) {
+			// Log het probleem
+			Log::error('❌ Mailfout: ' . $e->getMessage());
 
-        // Geef fout terug in het scherm (alleen in ontwikkelomgeving!)
-        return response()->json([
-            'status' => '❌ Mail NIET verzonden',
-            'foutmelding' => $e->getMessage()
-        ], 500);
-    }
-		
-     
-    }
-	
+			// Geef fout terug in het scherm (alleen in ontwikkelomgeving!)
+			return response()->json([
+				'status' => '❌ Mail NIET verzonden',
+				'foutmelding' => $e->getMessage()
+			], 500);
+		}
+	}
+
 	public function showCompanies()
-    {
-        $companies = Company::all();
-
-        return view('layouts.companies', ['companies' => $companies]);
-    }
-	
-	public function invoice()
-    {
-        //$drivers = Driver::all();
-		$drivers = Driver::orderBy('order', 'asc')->get();
-
-        return view('layouts.makeinvoice', ['drivers' => $drivers]);
-    }
-	
-	public function createInvoiceCompany()
-    {
+	{
 		$companies = Company::all();
 
-        return view('layouts.createInvoiceCompany', ['companies' => $companies]);
-    }
-	
+		return view('layouts.companies', ['companies' => $companies]);
+	}
+
+	public function invoice()
+	{
+		//$drivers = Driver::all();
+		$drivers = Driver::orderBy('order', 'asc')->get();
+
+		return view('layouts.makeinvoice', ['drivers' => $drivers]);
+	}
+
+	public function createInvoiceCompany()
+	{
+		$companies = Company::all();
+
+		return view('layouts.createInvoiceCompany', ['companies' => $companies]);
+	}
+
 	public function createInvoiceClient()
-    {
+	{
 		$clients = Booking::distinct()->orderBy('name', 'asc')->pluck('name');
 
-        return view('layouts.createInvoiceClient', ['clients' => $clients]);
-    }
-	
+		return view('layouts.createInvoiceClient', ['clients' => $clients]);
+	}
+
 	public function showInvoice(Request $request)
-    { 
+	{
 		// variabelen 
-        $driver = $request['driver_id'];
+		$driver = $request['driver_id'];
 		// year en moth zijn integers
-        $year = (int) $request['year'];
-        $month = (int) $request['month'];
-		
+		$year = (int) $request['year'];
+		$month = (int) $request['month'];
+
 		$monthName = $this->monthName($month);
-		
+
 		// query om de gegevens van de factuur op te halen
 		$invoice = Booking::select(
-				'bookings.id',
-				'bookings.assign_id',
-				'drivers.id as driver_id',
-				'drivers.name as driver_name',
-				'bookings.pickup_date as date', 
-				'bookings.pickup_time as time',
-				'bookings.pickup_address as from',
-				'bookings.destination as to',
-				'bookings.price', 
-				'bookings.price1',			
-				\DB::raw("$year AS year"),
-				\DB::raw("$month AS month"), 
-				\DB::raw("'$monthName' AS monthName"),
-				\DB::raw("CAST((
+			'bookings.id',
+			'bookings.assign_id',
+			'drivers.id as driver_id',
+			'drivers.name as driver_name',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time',
+			'bookings.pickup_address as from',
+			'bookings.destination as to',
+			'bookings.price',
+			'bookings.price1',
+			\DB::raw("$year AS year"),
+			\DB::raw("$month AS month"),
+			\DB::raw("'$monthName' AS monthName"),
+			\DB::raw("CAST((
 					CASE
 						WHEN bookings.mode = 'On account' THEN 0.00
 						WHEN TRIM(bookings.price1) = 'Code €' THEN 0.00  -- Als het exact gelijk is aan 'Code €', geef 0.00 terug
@@ -1380,12 +1451,12 @@ $bookings = Booking::select('bookings.*',
 						WHEN TRIM(bookings.price1) LIKE  '€%' THEN CAST(NULLIF(REPLACE(REPLACE(bookings.price1, '', ''), ',', '.'), '') AS DECIMAL(10,2))
 						ELSE  -- Anders, voer standaard verwerking uit voor andere gevallen
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, 'Code €', ''), ',', '.'), '') AS DECIMAL(10,2))
-					END) AS DECIMAL(10,2)) AS commissie")  ,
-				\DB::raw("SUM(
+					END) AS DECIMAL(10,2)) AS commissie"),
+			\DB::raw("SUM(
 					COALESCE(
 						CAST(NULLIF(REPLACE(REPLACE(bookings.price, '€', ''), ',', '.'), '') AS DECIMAL(10,2)), 0)
-					) OVER (PARTITION BY drivers.name) AS totaal") , 
-				\DB::raw("SUM(CAST((
+					) OVER (PARTITION BY drivers.name) AS totaal"),
+			\DB::raw("SUM(CAST((
 					CASE
 						WHEN TRIM(bookings.price1) = 'Code €' THEN 0.00
 						WHEN TRIM(bookings.price1) = '10%' THEN 
@@ -1396,10 +1467,10 @@ $bookings = Booking::select('bookings.*',
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, '€', ''), ',', '.'), '') AS DECIMAL(10,2))
 						ELSE 
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, 'Code €', ''), ',', '.'), '') AS DECIMAL(10,2))
-					END) AS DECIMAL(10,2))) OVER (PARTITION BY drivers.name) AS totaal_commissie" )
-				)
+					END) AS DECIMAL(10,2))) OVER (PARTITION BY drivers.name) AS totaal_commissie")
+		)
 			->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')    
+			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
 			->where('drivers.id', '=', $driver)
 			->whereRaw('YEAR(bookings.pickup_date) = ?', [$year])
 			->whereRaw('MONTH(bookings.pickup_date) = ?', [$month])
@@ -1408,14 +1479,14 @@ $bookings = Booking::select('bookings.*',
 			->get();
 		// Verwijder het euroteken 
 		$invoice->transform(function ($item) {
-   			$item->price = str_replace('€', '', $item->price);  
-			$item->commissie = str_replace('€', '', $item->commissie); 
-	    	return $item;
+			$item->price = str_replace('€', '', $item->price);
+			$item->commissie = str_replace('€', '', $item->commissie);
+			return $item;
 		});
-		
-		if ($invoice->isEmpty()){
-			 $driver = Driver::find($driver); // Haal de driver op met de ID
-    
+
+		if ($invoice->isEmpty()) {
+			$driver = Driver::find($driver); // Haal de driver op met de ID
+
 			$invoice = [
 				(object)[
 					'driver_name' => $driver->name,
@@ -1425,35 +1496,35 @@ $bookings = Booking::select('bookings.*',
 				]
 			];
 		}
-		
-        return view('layouts.invoice', ['invoice' => $invoice]);
-    }
+
+		return view('layouts.invoice', ['invoice' => $invoice]);
+	}
 
 	public function invoiceCompany(Request $request)
-    { 
+	{
 		// variabelen 
-        $company = $request['company'];
+		$company = $request['company'];
 		// year en moth zijn integers
-        $year = (int) $request['year'];
-        $month = (int) $request['month'];
-		
+		$year = (int) $request['year'];
+		$month = (int) $request['month'];
+
 		$monthName = $this->monthName($month);
-		
+
 		// query om de gegevens van de factuur op te halen
 		$invoice = Booking::select(
-				'bookings.id',
-				'bookings.assign_id',
-				'company as company',
-				'bookings.pickup_date as date', 
-				'bookings.pickup_time as time',
-				'bookings.pickup_address as from',
-				'bookings.destination as to',
-				'bookings.price', 
-				'bookings.price1',			
-				\DB::raw("$year AS year"),
-				\DB::raw("$month AS month"), 
-				\DB::raw("'$monthName' AS monthName"),
-				\DB::raw("CAST((
+			'bookings.id',
+			'bookings.assign_id',
+			'company as company',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time',
+			'bookings.pickup_address as from',
+			'bookings.destination as to',
+			'bookings.price',
+			'bookings.price1',
+			\DB::raw("$year AS year"),
+			\DB::raw("$month AS month"),
+			\DB::raw("'$monthName' AS monthName"),
+			\DB::raw("CAST((
 					CASE
 						WHEN bookings.mode = 'On account' THEN 0.00
 						WHEN TRIM(bookings.price1) = 'Code €' THEN 0.00  -- Als het exact gelijk is aan 'Code €', geef 0.00 terug
@@ -1464,12 +1535,12 @@ $bookings = Booking::select('bookings.*',
 						WHEN TRIM(bookings.price1) LIKE  '€%' THEN CAST(NULLIF(REPLACE(REPLACE(bookings.price1, '', ''), ',', '.'), '') AS DECIMAL(10,2))
 						ELSE  -- Anders, voer standaard verwerking uit voor andere gevallen
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, 'Code €', ''), ',', '.'), '') AS DECIMAL(10,2))
-					END) AS DECIMAL(10,2)) AS commissie")  ,
-				\DB::raw("SUM(
+					END) AS DECIMAL(10,2)) AS commissie"),
+			\DB::raw("SUM(
 					COALESCE(
 						CAST(NULLIF(REPLACE(REPLACE(bookings.price, '€', ''), ',', '.'), '') AS DECIMAL(10,2)), 0)
-					) OVER (PARTITION BY bookings.company) AS totaal") , 
-				\DB::raw("SUM(CAST((
+					) OVER (PARTITION BY bookings.company) AS totaal"),
+			\DB::raw("SUM(CAST((
 					CASE
 						WHEN TRIM(bookings.price1) = 'Code €' THEN 0.00
 						WHEN TRIM(bookings.price1) = '10%' THEN 
@@ -1480,8 +1551,8 @@ $bookings = Booking::select('bookings.*',
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, '€', ''), ',', '.'), '') AS DECIMAL(10,2))
 						ELSE 
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, 'Code €', ''), ',', '.'), '') AS DECIMAL(10,2))
-					END) AS DECIMAL(10,2))) OVER (PARTITION BY bookings.company) AS totaal_commissie" )
-				)			
+					END) AS DECIMAL(10,2))) OVER (PARTITION BY bookings.company) AS totaal_commissie")
+		)
 			->where('bookings.company', '=', $company)
 			->whereRaw('YEAR(bookings.pickup_date) = ?', [$year])
 			->whereRaw('MONTH(bookings.pickup_date) = ?', [$month])
@@ -1490,12 +1561,12 @@ $bookings = Booking::select('bookings.*',
 			->get();
 		// Verwijder het euroteken 
 		$invoice->transform(function ($item) {
-   			$item->price = str_replace('€', '', $item->price);  
-			$item->commissie = str_replace('€', '', $item->commissie); 
-	    	return $item;
+			$item->price = str_replace('€', '', $item->price);
+			$item->commissie = str_replace('€', '', $item->commissie);
+			return $item;
 		});
-		
-		if ($invoice->isEmpty()){
+
+		if ($invoice->isEmpty()) {
 			$invoice = [
 				(object)[
 					'company' => $company,
@@ -1505,34 +1576,34 @@ $bookings = Booking::select('bookings.*',
 				]
 			];
 		}
-		
-        return view('layouts.invoiceCompany', ['invoice' => $invoice]);
-    }
+
+		return view('layouts.invoiceCompany', ['invoice' => $invoice]);
+	}
 	public function invoiceClient(Request $request)
-    { 
+	{
 		// variabelen 
-        $client = $request['client'];
+		$client = $request['client'];
 		// year en moth zijn integers
-        $year = (int) $request['year'];
-        $month = (int) $request['month'];
-		
+		$year = (int) $request['year'];
+		$month = (int) $request['month'];
+
 		$monthName = $this->monthName($month);
-		
+
 		// query om de gegevens van de factuur op te halen
 		$invoice = Booking::select(
-				'bookings.id',
-				'bookings.assign_id',
-				'bookings.name as client',
-				'bookings.pickup_date as date', 
-				'bookings.pickup_time as time',
-				'bookings.pickup_address as from',
-				'bookings.destination as to',
-				'bookings.price', 
-				'bookings.price1',			
-				\DB::raw("$year AS year"),
-				\DB::raw("$month AS month"), 
-				\DB::raw("'$monthName' AS monthName"),
-				\DB::raw("CAST((
+			'bookings.id',
+			'bookings.assign_id',
+			'bookings.name as client',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time',
+			'bookings.pickup_address as from',
+			'bookings.destination as to',
+			'bookings.price',
+			'bookings.price1',
+			\DB::raw("$year AS year"),
+			\DB::raw("$month AS month"),
+			\DB::raw("'$monthName' AS monthName"),
+			\DB::raw("CAST((
 					CASE
 						WHEN bookings.mode = 'On account' THEN 0.00
 						WHEN TRIM(bookings.price1) = 'Code €' THEN 0.00  -- Als het exact gelijk is aan 'Code €', geef 0.00 terug
@@ -1543,12 +1614,12 @@ $bookings = Booking::select('bookings.*',
 						WHEN TRIM(bookings.price1) LIKE  '€%' THEN CAST(NULLIF(REPLACE(REPLACE(bookings.price1, '', ''), ',', '.'), '') AS DECIMAL(10,2))
 						ELSE  -- Anders, voer standaard verwerking uit voor andere gevallen
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, 'Code €', ''), ',', '.'), '') AS DECIMAL(10,2))
-					END) AS DECIMAL(10,2)) AS commissie")  ,
-				\DB::raw("SUM(
+					END) AS DECIMAL(10,2)) AS commissie"),
+			\DB::raw("SUM(
 					COALESCE(
 						CAST(NULLIF(REPLACE(REPLACE(bookings.price, '€', ''), ',', '.'), '') AS DECIMAL(10,2)), 0)
-					) OVER (PARTITION BY bookings.company) AS totaal") , 
-				\DB::raw("SUM(CAST((
+					) OVER (PARTITION BY bookings.company) AS totaal"),
+			\DB::raw("SUM(CAST((
 					CASE
 						WHEN TRIM(bookings.price1) = 'Code €' THEN 0.00
 						WHEN TRIM(bookings.price1) = '10%' THEN 
@@ -1559,8 +1630,8 @@ $bookings = Booking::select('bookings.*',
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, '€', ''), ',', '.'), '') AS DECIMAL(10,2))
 						ELSE 
 							CAST(NULLIF(REPLACE(REPLACE(bookings.price1, 'Code €', ''), ',', '.'), '') AS DECIMAL(10,2))
-					END) AS DECIMAL(10,2))) OVER (PARTITION BY bookings.company) AS totaal_commissie" )
-				)			
+					END) AS DECIMAL(10,2))) OVER (PARTITION BY bookings.company) AS totaal_commissie")
+		)
 			->where('bookings.name', '=', $client)
 			->whereRaw('YEAR(bookings.pickup_date) = ?', [$year])
 			->whereRaw('MONTH(bookings.pickup_date) = ?', [$month])
@@ -1569,12 +1640,12 @@ $bookings = Booking::select('bookings.*',
 			->get();
 		// Verwijder het euroteken 
 		$invoice->transform(function ($item) {
-   			$item->price = str_replace('€', '', $item->price);  
-			$item->commissie = str_replace('€', '', $item->commissie); 
-	    	return $item;
+			$item->price = str_replace('€', '', $item->price);
+			$item->commissie = str_replace('€', '', $item->commissie);
+			return $item;
 		});
-		
-		if ($invoice->isEmpty()){
+
+		if ($invoice->isEmpty()) {
 			$invoice = [
 				(object)[
 					'client' => $client,
@@ -1584,24 +1655,24 @@ $bookings = Booking::select('bookings.*',
 				]
 			];
 		}
-				
-        return view('layouts.invoiceClient', ['invoice' => $invoice]);
-    }
-	
+
+		return view('layouts.invoiceClient', ['invoice' => $invoice]);
+	}
+
 	public function editInvoice($id, Request $request)
-    {
+	{
 		// haal de gegevens op van de boeking die gewijzigd wordt
 		$invoice = Booking::select(
-						'bookings.id',
-						'bookings.assign_id',
-						'drivers.id as driver_id',
-						'drivers.name as driver_name',
-						'bookings.pickup_date as date', 
-						'bookings.pickup_time as time',
-						'bookings.pickup_address as from',
-						'bookings.destination as to',
-						\DB::raw("CAST(NULLIF(REPLACE(REPLACE(bookings.price, '€', ''), ',', '.'), '') AS DECIMAL(10,2)) AS price"),  
-						\DB::raw("CAST((
+			'bookings.id',
+			'bookings.assign_id',
+			'drivers.id as driver_id',
+			'drivers.name as driver_name',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time',
+			'bookings.pickup_address as from',
+			'bookings.destination as to',
+			\DB::raw("CAST(NULLIF(REPLACE(REPLACE(bookings.price, '€', ''), ',', '.'), '') AS DECIMAL(10,2)) AS price"),
+			\DB::raw("CAST((
 								CASE
 									WHEN bookings.mode = 'On account' THEN 0.00
 									WHEN TRIM(bookings.price1) = 'Code €' THEN 0.00  -- Als het exact gelijk is aan 'Code €', geef 0.00 terug
@@ -1612,117 +1683,118 @@ $bookings = Booking::select('bookings.*',
 									WHEN TRIM(bookings.price1) LIKE  '€%' THEN CAST(NULLIF(REPLACE(REPLACE(bookings.price1, '', ''), ',', '.'), '') AS DECIMAL(10,2))
 									ELSE  -- Anders, voer standaard verwerking uit voor andere gevallen
 										CAST(NULLIF(REPLACE(REPLACE(bookings.price1, 'Code €', ''), ',', '.'), '') AS DECIMAL(10,2))
-								END) AS DECIMAL(10,2)) AS commissie")						
-						)
-					->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
-					->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')    
-					->where('bookings.id', '=', $id)
-					->firstorFail();
-		
+								END) AS DECIMAL(10,2)) AS commissie")
+		)
+			->leftJoin('driver_booking', 'driver_booking.id', '=', 'bookings.assign_id')
+			->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+			->where('bookings.id', '=', $id)
+			->firstorFail();
+
 		// vul de extra gegvens van de factuur 
 		$invoice->year = $request->year;
 		$invoice->month = $request->month;
-		$invoice->monthName= $request->monthNamer;
+		$invoice->monthName = $request->monthNamer;
 		$invoice->totaal = $request->totaal;
 		$invoice->totaal_commissie = $request->totaal_commissie;
-		
+
 		return view('layouts.editinvoice', ['invoice' => $invoice]);
-    }
-	
+	}
+
 	public function updateInvoice(Request $request)
-    {		
+	{
 		// ook de booking die geupdate wordt
 		$booking = Booking::find($request->id);
-		
-        // Update de velden
+
+		// Update de velden
 		$booking->price = (float) $request->price;
 		$booking->price1 = (float) $request->commissie;
-		
+
 		//save de booking
-		$booking->save();	
-		
+		$booking->save();
+
 		// Maak een nieuw Request-object aan met de data als parameters om de factuur met nieuwe gegevens te zien
 		$invoiceRequest = Request::create('/', 'POST', [
 			'driver_id' => $request->driverId,
 			'year'       => $request->year,
 			'month'      => $request->month,
 		]);
-		
+
 		return $this->showInvoice($invoiceRequest);
-    }
-	
+	}
+
 	public function createCompany()
-    {
-		 return view('admin.addcompanies');
-    }
-	
-    public function editCompany($id)
-    {
+	{
+		return view('admin.addcompanies');
+	}
+
+	public function editCompany($id)
+	{
 		$company = Company::find($id);
-		
+
 		return view('layouts.editcompanies', ['company' => $company]);
-    }
+	}
 
-    public function storeCompany(Request $request)
-    {        
-        $company = new Company();
-        $company->naam = $request['name'];
-        $company->save();
-        return redirect()->route('admin.companies');
-    }
-	
-    public function updateCompany(Request $request)
-    {
+	public function storeCompany(Request $request)
+	{
+		$company = new Company();
+		$company->naam = $request['name'];
+		$company->save();
+		return redirect()->route('admin.companies');
+	}
 
-        //dd($request);
-        $data = Company::where('id', $request->id)->update([
-            'naam' => $request->name
-        ]);
+	public function updateCompany(Request $request)
+	{
 
-        Session::flash('success', 'Data Updated successfully!');
+		//dd($request);
+		$data = Company::where('id', $request->id)->update([
+			'naam' => $request->name
+		]);
 
-        return redirect()->route('admin.companies');
-    }
-	
+		Session::flash('success', 'Data Updated successfully!');
+
+		return redirect()->route('admin.companies');
+	}
+
 	public function editWhatsapp($id)
-    {
+	{
 		$booking = Booking::find($id);
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		$companies = Company::all();
-		$chauffeur = DriverBooking::where('booking_id', $booking->id)->value('driver_id');
-		
+		$chauffeur = DriverBooking::where('id', $booking->assign_id)->value('driver_id');
+
 		$driver = Driver::find($chauffeur);
 		$pickupDate = \Carbon\Carbon::parse($booking->pickup_date);
 		$message =  "Hallo " . $driver->name . "," . "\n\nDeze rit is aan jou toegewezen: " .
-					"\n\n*Datum:* " . $pickupDate->format('D') . " " . $pickupDate->format('d-m-Y') .
-					"\n*Tijd:* " . $booking->pickup_time .
-					"\n*Van:* " . ($booking->pickup_address ?? '') .
-					"\n*Huisnummer:* " . ($booking->house_no_from ?? '') .
-					"\n*Naar:* " . ($booking->destination ?? '') .
-					"\n*Huisnummer:* " . ($booking->house_no_to ?? '') .
-					"\n*Naam:* " . $booking->name .
-					"\n*Telefoon:* " . $booking->phone .
-					"\n*Bedrijf:* " . $booking->company .
-					"\n*Prijs:* " . $booking->price .
-					"\n*Code:* " . $booking->price1 .
-					"\n*Mode:* " . $booking->mode .
-					"\n*Pax:* " . $booking->press .
-					"\n*Bagage:* " . $booking->luggage .
-					"\n*Voertuig:* " . ($booking->vehicle ?? '') .
-					"\n*Opmerkingen:* " . $booking->remark;
+			"\n\n*Datum:* " . $pickupDate->format('D') . " " . $pickupDate->format('d-m-Y') .
+			"\n*Tijd:* " . $booking->pickup_time .
+			"\n*Van:* " . ($booking->pickup_address ?? '') .
+			"\n*Huisnummer:* " . ($booking->house_no_from ?? '') .
+			"\n*Naar:* " . ($booking->destination ?? '') .
+			"\n*Huisnummer:* " . ($booking->house_no_to ?? '') .
+			"\n*Naam:* " . $booking->name .
+			"\n*Telefoon:* " . $booking->phone .
+			"\n*Bedrijf:* " . $booking->company .
+			"\n*Prijs:* " . $booking->price .
+			"\n*Code:* " . $booking->price1 .
+			"\n*Mode:* " . $booking->mode .
+			"\n*Pax:* " . $booking->press .
+			"\n*Bagage:* " . $booking->luggage .
+			"\n*Voertuig:* " . ($booking->vehicle ?? '') .
+			"\n*Opmerkingen:* " . $booking->remark;
 
-		$phone = '31' . ltrim($driver->phone, '0');	
+		$phone = '31' . ltrim($driver->phone, '0');
 		$displayMessage = str_replace("\n", "\r\n", $message); // voor nette weergave in textare
-		
-        return view('layouts.editwhatsapp', ['phone' => $phone, 
-											 'displayMessage' => $displayMessage]);
-    }
-	
-	public function sendWhatsapp($request){
-		
+
+		return view('layouts.editwhatsapp', [
+			'phone' => $phone,
+			'displayMessage' => $displayMessage
+		]);
 	}
-	
-	public function sendWhatsAppMessage($to, $message) {
+
+	public function sendWhatsapp($request) {}
+
+	public function sendWhatsAppMessage($to, $message)
+	{
 		$sid = 'ACbb8b505c6424e52c0462c3cc1ce1355a';
 		$token = 'bfe6e71ba41a016115b8246b02916c3b';
 		$client = new Client($sid, $token);
@@ -1733,12 +1805,13 @@ $bookings = Booking::select('bookings.*',
 				'from' => 'whatsapp:+14155238886', // Twilio WhatsApp Sandbox Number
 				'body' => $message
 			]
-    	);
+		);
 	}
-		
-	private function monthName($month){
+
+	private function monthName($month)
+	{
 		// monthName vullen nmet de naam an de maand
-		switch($month) {
+		switch ($month) {
 			case 1:
 				$monthName = "Januari";
 				break;
@@ -1776,48 +1849,48 @@ $bookings = Booking::select('bookings.*',
 				$monthName = "December";
 				break;
 		}
-		
+
 		return $monthName;
 	}
 
 	public function whatsappVerify(Request $request)
-    {
-        $verifyToken = "9qEtOSeKeAlkeDx5qO9O"; // kies iets unieks
+	{
+		$verifyToken = "9qEtOSeKeAlkeDx5qO9O"; // kies iets unieks
 
-        $mode = $request->get('hub_mode');
-        $token = $request->get('hub_verify_token');
-        $challenge = $request->get('hub_challenge');
+		$mode = $request->get('hub_mode');
+		$token = $request->get('hub_verify_token');
+		$challenge = $request->get('hub_challenge');
 
-        if ($mode === 'subscribe' && $token === $verifyToken) {
-            return response($challenge, 200);
-        }
+		if ($mode === 'subscribe' && $token === $verifyToken) {
+			return response($challenge, 200);
+		}
 
-        return response('Invalid token', 403);
-    }
+		return response('Invalid token', 403);
+	}
 
-    // Webhook berichten ontvangen
-    public function whatsappReceive(Request $request)
-    {
+	// Webhook berichten ontvangen
+	public function whatsappReceive(Request $request)
+	{
 		$data = $request->all();
-	
+
 		if (isset($data['entry'][0]['changes'][0]['value']['messages'][0])) {
 			$message = $data['entry'][0]['changes'][0]['value']['messages'][0];
 
 			WhatsappMessage::create([
-					'wa_id'        => $message['id'],
-					'from_number'  => $message['from'],
-					'message_text' => $message['text']['body'] ?? '',
-					'received_at'  => now(),
+				'wa_id'        => $message['id'],
+				'from_number'  => $message['from'],
+				'message_text' => $message['text']['body'] ?? '',
+				'received_at'  => now(),
 			]);
-		} 
-        // Ontleed hier het bericht en sla op in database
-        //\Log::info($request->all()); // tijdelijk om te testen
-        return response('Received', 200);
+		}
+		// Ontleed hier het bericht en sla op in database
+		//\Log::info($request->all()); // tijdelijk om te testen
+		return response('Received', 200);
 		//return response()->json($request->all());
-    }
-	
+	}
+
 	public function fetchOutlookMails()
-    {
+	{
 
 		$hostname = '{imap.gmail.com:993/imap/ssl/novalidate-cert}INBOX';
 		$username = 'spltaximail@gmail.com';
@@ -1837,7 +1910,6 @@ $bookings = Booking::select('bookings.*',
 			echo "Foutmelding: " . imap_last_error();
 		} else {
 			echo "Verbinding geslaagd! ";
-
 		}
 
 		$emails = imap_search($inbox, 'UNSEEN'); // Ongelezen e-mails
@@ -1848,7 +1920,7 @@ $bookings = Booking::select('bookings.*',
 				$overview = imap_fetch_overview($inbox, $email_number, 0);
 				$body = $this->getEmailBody($inbox, $email_number);
 
-		//        $body = imap_fetchbody($inbox, $email_number, 1);
+				//        $body = imap_fetchbody($inbox, $email_number, 1);
 
 				$parsed = $this->parseTaxiMail($body ?? '');
 
@@ -1860,7 +1932,7 @@ $bookings = Booking::select('bookings.*',
 					'pickup_date' 			=> $parsed['datum'],
 					'pickup_time' 			=> $parsed['tijd'],
 					'pickup_address' 		=> $parsed['van'],
-					'destination' 			=> $parsed['naar'],			
+					'destination' 			=> $parsed['naar'],
 					'to' 					=> $parsed['naar'],
 					'press' 				=> $parsed['personen'],
 					'uname'   				=> $parsed['naam'],
@@ -1883,9 +1955,9 @@ $bookings = Booking::select('bookings.*',
 					'flight_time'			=> $parsed['flight_time'],
 					'flight_no_on_return' 	=> $parsed['flight_no_on_return']
 				];
-				
+
 				$whatsappData = Arr::except($emailData, ['to', 'return']);
-				WhatsappMessage::create($whatsappData);	
+				WhatsappMessage::create($whatsappData);
 
 				$bookingMail = Arr::except($emailData, ['from', 'subject', 'body', 'received_at', 'destination']);
 
@@ -1894,16 +1966,15 @@ $bookings = Booking::select('bookings.*',
 
 				// roep de adminStore functie aan
 				$this->adminStore($request);
-
 			}
 		}
-		
-        imap_close($inbox); 
-		
+
+		imap_close($inbox);
+
 		echo 'Email verwerkt!';
-        return;
-    }
-	
+		return;
+	}
+
 	private function parseTaxiMail(string $text)
 	{
 		$result = [
@@ -1937,20 +2008,20 @@ $bookings = Booking::select('bookings.*',
 		// rommel-voetnoten verwijderen (case-insensitive)
 		$lines = array_filter($lines, fn($l) => !preg_match('/verstuurd vanaf mijn\s*iphone/i', $l));
 		$lines = array_filter($lines, fn($l) => $l !== '');
-		
+
 		$fullText = trim(preg_replace('/\s+/', ' ', $text)); // samengeknepen versie voor fallback checks
 		// rommel-voetnoten verwijderen (case-insensitive)
 		$fullText = preg_replace('/verstuurd vanaf mijn\s*iphone/i', '', $fullText);
 
 		// --- Mobiel flexibel herkennen (ook met spaties) ---
 		if (preg_match('/(\+31\s?6(?:\s?\d){8}|06(?:\s?\d){8})/', $fullText, $m)) {
-			 $mobiel = preg_replace('/[^\d+]/', '', $m[1]);  
-    
+			$mobiel = preg_replace('/[^\d+]/', '', $m[1]);
+
 			// zorgen dat alleen een '+' aan het begin mag staan
 			if (strpos($mobiel, '+') > 0) {
-				$mobiel = str_replace('+', '', $mobiel); 
+				$mobiel = str_replace('+', '', $mobiel);
 			}
-			
+
 			$result['mobiel'] = $mobiel;
 			// mobil nummer verwijderen uit de volledige tekst
 			$fullText = str_replace($m[0], '', $fullText);
@@ -1980,14 +2051,12 @@ $bookings = Booking::select('bookings.*',
 			// 1) Rit: dd-mm-yyyy (of dd/mm/yyyy of dd.mm.yyyy) [optioneel tijd]
 			if (preg_match('/Rit:\s*(\d{2}-\d{2}-\d{4})\s*(\d{2}[.:]\d{2})?.*:\s*(.+?)\s*\/\s*(.+)/i', $line, $m)) {
 				$result['datum'] = date("Y-m-d", strtotime(str_replace('-', '/', $m[1])));
-				if (isset($m[2])) $result['tijd'] = str_replace('.', ':', $m[2]);		
+				if (isset($m[2])) $result['tijd'] = str_replace('.', ':', $m[2]);
 
 				$result['van'] = trim($m[3]);
 				$result['naar'] = trim($m[4]);
 				continue;
-			}
-
-			elseif (preg_match('/\bRit:\s*([0-3]?\d[-\/\.][0-1]?\d[-\/\.]\d{4})(?:\s*(?:om)?\s*([0-2]?\d[:.]\d{2}))?/i', $lineNorm, $m)) {
+			} elseif (preg_match('/\bRit:\s*([0-3]?\d[-\/\.][0-1]?\d[-\/\.]\d{4})(?:\s*(?:om)?\s*([0-2]?\d[:.]\d{2}))?/i', $lineNorm, $m)) {
 				$dateRaw = str_replace(['/', '.'], '-', $m[1]); // normaliseer separators naar '-'
 				// probeer d-m-Y strikt te parsen
 				$dt = \DateTime::createFromFormat('d-m-Y', $dateRaw);
@@ -2004,8 +2073,7 @@ $bookings = Booking::select('bookings.*',
 					$result['tijd'] = str_replace('.', ':', $m[2]);
 				}
 				continue; // verder met volgende regel
-			}
-			elseif (preg_match('/^([0-2]?\d[:.]\d{2})\s+(.+?)\s*\/\s*(.+)$/i', $lineNorm, $m)) {
+			} elseif (preg_match('/^([0-2]?\d[:.]\d{2})\s+(.+?)\s*\/\s*(.+)$/i', $lineNorm, $m)) {
 				$result['tijd'] = str_replace('.', ':', $m[1]);
 				$result['van'] = trim($m[2]);
 				$result['naar'] = trim($m[3]);
@@ -2035,38 +2103,53 @@ $bookings = Booking::select('bookings.*',
 				$result['naar'] = trim($m[1]);
 				continue;
 			}
-			
+
 			// Personen (met label Personen:)
 			if (preg_match('/^Personen\s*:\s*(\d+)/i', $lineNorm, $m)) {
 				$result['personen'] = "Pax " . (int)$m[1];
 				continue;
 			}
-			
+
 			// 4) Personen (regel)
 			if (preg_match('/^Aantal personen\s*:\s*(\d+)/i', $lineNorm, $m)) {
-				$result['personen'] = "Pax ".(int)$m[1];
+				$result['personen'] = "Pax " . (int)$m[1];
 				continue;
 			}
 			if (preg_match('/^(\d+)\s*pers\b/i', $lineNorm, $m)) {
-				$result['personen'] = "Pax ".(int)$m[1];
+				$result['personen'] = "Pax " . (int)$m[1];
 				// don't continue — we might still want prijs etc in same line
 			}
 
 			// 5) Vehicle (Bus max)
 			if (preg_match('/Bus\s*max\s*(\d+)/i', $lineNorm, $m)) {
-				$result['vehicle'] = "Bus ".(int)$m[1];
+				$result['vehicle'] = "Bus " . (int)$m[1];
 			}
 
 			// 6) Betaalwijze in lijn
 			if (preg_match('/\b(cash|contant|pin|on account|credit card|remittance|no payment)\b/i', $lineNorm, $m)) {
-				switch (strtolower($m[1])){
-					case 'cash': case 'contant': $result['betaalwijze']='cash'; break;
-					case 'pin': $result['betaalwijze']='pin payment'; break;
-					case 'on account': $result['betaalwijze']='on account'; break;
-					case 'credit card': $result['betaalwijze']='credit card'; break;
-					case 'remittance': $result['betaalwijze']='remittance'; break;
-					case 'online': $result['betaalwijze']='remittance'; break;
-					case 'no payment': $result['betaalwijze']='no payment'; break;
+				switch (strtolower($m[1])) {
+					case 'cash':
+					case 'contant':
+						$result['betaalwijze'] = 'cash';
+						break;
+					case 'pin':
+						$result['betaalwijze'] = 'pin payment';
+						break;
+					case 'on account':
+						$result['betaalwijze'] = 'on account';
+						break;
+					case 'credit card':
+						$result['betaalwijze'] = 'credit card';
+						break;
+					case 'remittance':
+						$result['betaalwijze'] = 'remittance';
+						break;
+					case 'online':
+						$result['betaalwijze'] = 'remittance';
+						break;
+					case 'no payment':
+						$result['betaalwijze'] = 'no payment';
+						break;
 				}
 			}
 
@@ -2077,17 +2160,17 @@ $bookings = Booking::select('bookings.*',
 					if ($v !== '') $allPrices[] = $v;
 					elseif (!empty($matches[2][$i])) $allPrices[] = $matches[2][$i];
 				}
-				if (isset($allPrices[0]) && !$result['price']) $result['price'] = "€ ". $allPrices[0];
-				if (isset($allPrices[1]) && !$result['price1']) $result['price1'] = "Code € ". $allPrices[1];
+				if (isset($allPrices[0]) && !$result['price']) $result['price'] = "€ " . $allPrices[0];
+				if (isset($allPrices[1]) && !$result['price1']) $result['price1'] = "Code € " . $allPrices[1];
 			}
 
 			// 8) code X (geheel tekst)
 			if (!$result['price1'] && preg_match('/\bcode[\s\p{Zs}]*€?[\s\p{Zs}]*(\d+[.,]?\d*)/iu', $lineNorm, $m)) {
-				$result['price1'] = "Code € ". $m[1];
+				$result['price1'] = "Code € " . $m[1];
 			}
-			
+
 			//  Datum: label
-		/*	if (preg_match('/^Datum\s*:\s*(\d{2}[-\/\.]\d{2}[-\/\.]\d{4})$/i', $lineNorm, $m)) {
+			/*	if (preg_match('/^Datum\s*:\s*(\d{2}[-\/\.]\d{2}[-\/\.]\d{4})$/i', $lineNorm, $m)) {
 				$dateRaw = str_replace(['/', '.'], '-', $m[1]);
 				$dt = \DateTime::createFromFormat('d-m-Y', $dateRaw);
 				if ($dt !== false) {
@@ -2095,8 +2178,8 @@ $bookings = Booking::select('bookings.*',
 				}
 				continue;
 			} */
-			
-		/*	if (preg_match('/^Datum\s*:\s*(.+)$/i', $lineNorm, $m)) {
+
+			/*	if (preg_match('/^Datum\s*:\s*(.+)$/i', $lineNorm, $m)) {
 				$dateRaw = trim($m[1]);
 				$ts = strtotime($dateRaw);
 				if ($ts !== false) {
@@ -2104,7 +2187,7 @@ $bookings = Booking::select('bookings.*',
 				}
 				continue;
 			} */
-			
+
 			// algemene maandnaam pattern (voor gebruik in fallback checks)
 			$monthPattern = 'januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december';
 
@@ -2135,7 +2218,7 @@ $bookings = Booking::select('bookings.*',
 				$result['vluchtnummer'] = trim($m[1]);
 				continue;
 			}
-			
+
 			// 11) Opmerking label
 			if (preg_match('/^Opmerking\s*:\s*(.+)$/i', $lineNorm, $m)) {
 				$result['opmerking'] = trim($m[1]);
@@ -2146,24 +2229,24 @@ $bookings = Booking::select('bookings.*',
 			if (preg_match('/^Prijs\s*:\s*(.+)$/i', $lineNorm, $m)) {
 				$price = trim($m[1]);
 				$price = preg_replace('/\s*(€|euro)\s*/iu', '', $price);
-    			$price = str_replace('.', ',', $price);
+				$price = str_replace('.', ',', $price);
 				$result['price'] = "€ " . str_replace('.', ',', $price);
 				continue;
 			}
-			
+
 			// ) Code label
 			if (preg_match('/^Code\s*:\s*(.+)$/i', $lineNorm, $m)) {
 				$price1 = trim($m[1]);
 				$price1 = preg_replace('/\s*(€|euro)\s*/iu', '', $price1);
-    			$price1 = str_replace('.', ',', $price1);
+				$price1 = str_replace('.', ',', $price1);
 				$price1 = preg_replace('/€/u', '', $price1);
 				$result['price1'] = "Code € " . str_replace('.', ',', $price1);
 				continue;
 			}
-			
-			 // Return rit (ja/nee of een tekst)
+
+			// Return rit (ja/nee of een tekst)
 			if (preg_match('/^Return\s*:\s*(.+)$/i', $lineNorm, $m)) {
-				 $val = trim($m[1]);
+				$val = trim($m[1]);
 				if (strcasecmp($val, 'Ja') === 0) {
 					$val = 'Yes';
 				}
@@ -2172,7 +2255,7 @@ $bookings = Booking::select('bookings.*',
 			}
 
 			// Flight date (dd-mm-yyyy)
-		/*	if (preg_match('/^Flight date\s*:\s*(\d{2}[-\/.]\d{2}[-\/.]\d{4})/i', $lineNorm, $m)) {
+			/*	if (preg_match('/^Flight date\s*:\s*(\d{2}[-\/.]\d{2}[-\/.]\d{4})/i', $lineNorm, $m)) {
 				$dateRaw = str_replace(['/', '.'], '-', $m[1]);
 				$dt = \DateTime::createFromFormat('d-m-Y', $dateRaw);
 				if ($dt !== false) {
@@ -2180,15 +2263,15 @@ $bookings = Booking::select('bookings.*',
 				}
 				continue;
 			}  */
-			
-	/*		if (preg_match('/^Return date.*:\s*(.+)$/i', $lineNorm, $m)) {
+
+			/*		if (preg_match('/^Return date.*:\s*(.+)$/i', $lineNorm, $m)) {
 				$ts = strtotime(trim($m[1]));
 				if ($ts !== false) {
 					$result['flight_date'] = date('Y-m-d', $ts);
 				}
 				continue;
 			} */
-			
+
 			// --- Flight date (heen / return) flexibel
 			if (preg_match('/^Return\s*date(?:\s*(heen|return|terug))?\s*:\s*(.+)$/i', $lineNorm, $m)) {
 				$kind = isset($m[1]) ? strtolower($m[1]) : 'heen';
@@ -2205,7 +2288,7 @@ $bookings = Booking::select('bookings.*',
 
 
 			// Flight time (hh:mm)
-	/*		if (preg_match('/^Flight time\s*:\s*([0-2]?\d[:.]\d{2})/i', $lineNorm, $m)) {
+			/*		if (preg_match('/^Flight time\s*:\s*([0-2]?\d[:.]\d{2})/i', $lineNorm, $m)) {
 				$result['flight_time'] = str_replace('.', ':', $m[1]);
 				continue;
 			} */
@@ -2213,7 +2296,7 @@ $bookings = Booking::select('bookings.*',
 				$result['flight_time'] = str_replace('.', ':', $m[1]);
 				continue;
 			}*/
-			
+
 			// --- Flight time (heen / return) flexibel (negeert "uur")
 			if (preg_match('/^Return\s*time(?:\s*(heen|return|terug))?\s*:\s*(.+)$/i', $lineNorm, $m)) {
 				$kind = isset($m[1]) ? strtolower($m[1]) : 'heen';
@@ -2224,30 +2307,29 @@ $bookings = Booking::select('bookings.*',
 				}
 				continue;
 			}
-			
+
 
 
 			// Flight number on return
-	/*		if (preg_match('/^Return\s*no\s*:\s*(.+)$/i', $lineNorm, $m)) {
+			/*		if (preg_match('/^Return\s*no\s*:\s*(.+)$/i', $lineNorm, $m)) {
 				$result['flight_no_on_return'] = trim($m[1]);
 				continue;
 			}*/
-			
-		/*	if (preg_match('/^Return.*flight.*no.*:\s*(.+)$/i', $lineNorm, $m)) {
+
+			/*	if (preg_match('/^Return.*flight.*no.*:\s*(.+)$/i', $lineNorm, $m)) {
 				$result['flight_no_on_return'] = trim($m[1]);
 				continue;
 			} */
-			
+
 			// --- Vluchtnummer (heen / terug) flexibel
 			if (preg_match('/\bVluchtnummer(?:\s*(heen|return|terug))?\s*:\s*([A-Za-z0-9\-]+)/i', $lineNorm, $m)) {
 				if (!empty($m[1]) && preg_match('/return|terug/i', $m[1])) $result['flight_no_on_return'] = trim($m[2]);
 				else $result['vluchtnummer'] = trim($m[2]);
 				continue;
-			}
-			else if (preg_match('/^Return.*flight.*no.*:\s*(.+)$/i', $lineNorm, $m)) {
+			} else if (preg_match('/^Return.*flight.*no.*:\s*(.+)$/i', $lineNorm, $m)) {
 				$result['flight_no_on_return'] = trim($m[1]);
 				continue;
-			} 
+			}
 
 			// Company
 			if (preg_match('/^Company\s*:\s*(.+)$/i', $lineNorm, $m)) {
@@ -2276,23 +2358,24 @@ $bookings = Booking::select('bookings.*',
 		}
 
 		if (!$result['personen'] && preg_match('/(\d+)\s*pers/i', $fullText, $m)) {
-			$result['personen'] = "Pax ".(int)$m[1];
+			$result['personen'] = "Pax " . (int)$m[1];
 		}
 		if (!$result['vehicle'] && preg_match('/Bus\s*max\s*(\d+)/i', $fullText, $m)) {
-			$result['vehicle'] = "Bus ".(int)$m[1];
+			$result['vehicle'] = "Bus " . (int)$m[1];
 		}
 		if (!$result['price'] && preg_match('/€\s*([\d,\.]+)/i', $fullText, $m)) {
 			$price = trim($m[1]);
 			$price = preg_replace('/\s*(€|euro)\s*/iu', '', $price);
-    		$price = str_replace('.', ',', $price);
+			$price = str_replace('.', ',', $price);
 			$result['price'] = "€ " . str_replace('.', ',', $price);
 		}
 		if (!$result['price1'] && preg_match('/code\s*€?\s*([\d,\.]+)/i', $fullText, $m)) {
 			$price1 = trim($m[1]);
 			$price1 = preg_replace('/\s*(€|euro)\s*/iu', '', $price1);
-    		$price1 = str_replace('.', ',', 1);
+			$price1 = str_replace('.', ',', 1);
 			$price1 = preg_replace('/€/u', '', $price1);
-			$result['price1'] = "€ " . str_replace('.', ',', $m[1]);$result['price1'] = "Code € ". $price1;
+			$result['price1'] = "€ " . str_replace('.', ',', $m[1]);
+			$result['price1'] = "Code € " . $price1;
 		}
 
 		// --- House numbers uit van/naar halen met splitAddress ---
@@ -2300,7 +2383,7 @@ $bookings = Booking::select('bookings.*',
 		[$result['naar'], $toNo]   = $this->splitAddress($result['naar'] ?? '');
 		$result['house_no_from'] = (stripos($result['van'] ?? '', 'schiphol') !== false) ? null : $fromNo;
 		$result['house_no_to']   = (stripos($result['naar'] ?? '', 'schiphol') !== false)
-			? ($result['vluchtnummer'] ? 'Flight '.$result['vluchtnummer'] : null)
+			? ($result['vluchtnummer'] ? 'Flight ' . $result['vluchtnummer'] : null)
 			: $toNo;
 
 		// --- Naam fallback (laatste regel of e-mail) ---
@@ -2335,19 +2418,19 @@ $bookings = Booking::select('bookings.*',
 					$result['naam'] = trim(
 						preg_replace('/(\+31\s?6(?:\s?\d){8}|06(?:\s?\d){8})/', '', $last)
 					);
-    }
+				}
 			}
 			// anders: gebruik e-mail als fallback naam
 			if (!$result['naam'] && $result['email']) {
 				$result['naam'] = $result['email'];
-			}						
+			}
 		}
-		
+
 		// --- Belangrijk: fallback datum = vandaag ---
 		if (!$result['datum']) {
 			$result['datum'] = date('Y-m-d');
 		}
-		
+
 		return $result;
 	}
 
@@ -2402,16 +2485,20 @@ $bookings = Booking::select('bookings.*',
 
 
 
-	private function getEmailBody($inbox, $email_number) {
+	private function getEmailBody($inbox, $email_number)
+	{
 		$structure = imap_fetchstructure($inbox, $email_number);
 		$body = '';
 
 		// Functie om inhoud correct te decoderen
-		$decode = function($content, $encoding) {
+		$decode = function ($content, $encoding) {
 			switch ($encoding) {
-				case 3: return imap_base64($content);
-				case 4: return imap_qprint($content);
-				default: return $content;
+				case 3:
+					return imap_base64($content);
+				case 4:
+					return imap_qprint($content);
+				default:
+					return $content;
 			}
 		};
 
@@ -2444,9 +2531,10 @@ $bookings = Booking::select('bookings.*',
 		return trim($body);
 	}
 
-	
-	
-	private function getEmailBodyFout($inbox, $email_number) {
+
+
+	private function getEmailBodyFout($inbox, $email_number)
+	{
 		$structure = imap_fetchstructure($inbox, $email_number);
 
 		$body = '';
@@ -2470,41 +2558,79 @@ $bookings = Booking::select('bookings.*',
 
 		return trim($body);
 	}
-	
-	private function cleanAddress($address) {
+
+	private function cleanAddress($address)
+	{
 		$address = trim($address);
 		$address = str_replace(['`', ','], ['', ''], $address); // verwijder backticks & komma’s
 		$address = preg_replace('/\s+/', ' ', $address);        // dubbele spaties -> enkel
 		return trim($address);
 	}
 
-	private function dutchMonthToNumber(string $month): ?int {
+	private function dutchMonthToNumber(string $month): ?int
+	{
 		$map = [
-			'januari'=>1,'februari'=>2,'maart'=>3,'april'=>4,'mei'=>5,'juni'=>6,
-			'juli'=>7,'augustus'=>8,'september'=>9,'oktober'=>10,'november'=>11,'december'=>12,
-			'jan'=>1,'feb'=>2,'mrt'=>3,'apr'=>4,'mei'=>5,'jun'=>6,'jul'=>7,'aug'=>8,'sep'=>9,'sept'=>9,'okt'=>10,'nov'=>11,'dec'=>12
+			'januari' => 1,
+			'februari' => 2,
+			'maart' => 3,
+			'april' => 4,
+			'mei' => 5,
+			'juni' => 6,
+			'juli' => 7,
+			'augustus' => 8,
+			'september' => 9,
+			'oktober' => 10,
+			'november' => 11,
+			'december' => 12,
+			'jan' => 1,
+			'feb' => 2,
+			'mrt' => 3,
+			'apr' => 4,
+			'mei' => 5,
+			'jun' => 6,
+			'jul' => 7,
+			'aug' => 8,
+			'sep' => 9,
+			'sept' => 9,
+			'okt' => 10,
+			'nov' => 11,
+			'dec' => 12
 		];
 		$m = mb_strtolower(trim($month), 'UTF-8');
 		return $map[$m] ?? null;
 	}
 
-	private function parseDateToYmd(string $s): ?string {
+	private function parseDateToYmd(string $s): ?string
+	{
 		$s = trim(preg_replace('/\s+/', ' ', $s));
 		// 1) dd-mm-yyyy or dd/mm/yyyy or dd.mm.yyyy
 		if (preg_match('/\b([0-3]?\d)[\-\/\.]([0-1]?\d)[\-\/\.](\d{4})\b/u', $s, $m)) {
-			$d = (int)$m[1]; $mo = (int)$m[2]; $y = (int)$m[3];
+			$d = (int)$m[1];
+			$mo = (int)$m[2];
+			$y = (int)$m[3];
 			if (checkdate($mo, $d, $y)) return sprintf('%04d-%02d-%02d', $y, $mo, $d);
 		}
 		// 2) dd <Dutch month> yyyy  (bijv. "3 oktober 2025")
 		if (preg_match('/\b([0-3]?\d)\s+(januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+(\d{4})\b/iu', $s, $m)) {
-			$d = (int)$m[1]; $mo = $this->dutchMonthToNumber($m[2]); $y = (int)$m[3];
+			$d = (int)$m[1];
+			$mo = $this->dutchMonthToNumber($m[2]);
+			$y = (int)$m[3];
 			if ($mo && checkdate($mo, $d, $y)) return sprintf('%04d-%02d-%02d', $y, $mo, $d);
 		}
 		// 3) Probeer strtotime na omzetting van NL -> EN maandnamen
 		$mapEng = [
-			'januari'=>'January','februari'=>'February','maart'=>'March','april'=>'April','mei'=>'May',
-			'juni'=>'June','juli'=>'July','augustus'=>'August','september'=>'September','oktober'=>'October',
-			'november'=>'November','december'=>'December'
+			'januari' => 'January',
+			'februari' => 'February',
+			'maart' => 'March',
+			'april' => 'April',
+			'mei' => 'May',
+			'juni' => 'June',
+			'juli' => 'July',
+			'augustus' => 'August',
+			'september' => 'September',
+			'oktober' => 'October',
+			'november' => 'November',
+			'december' => 'December'
 		];
 		$sEng = str_ireplace(array_keys($mapEng), array_values($mapEng), $s);
 		$ts = strtotime($sEng);
@@ -2512,15 +2638,17 @@ $bookings = Booking::select('bookings.*',
 		return null;
 	}
 
-	private function parseTimeHm(string $s): ?string {
+	private function parseTimeHm(string $s): ?string
+	{
 		// accepteer 03:15 of 03.15 en negeer "uur"
 		if (preg_match('/\b([0-2]?\d)[:\.]\s*([0-5]\d)\b/u', $s, $m)) {
-			$h = (int)$m[1]; $mi = (int)$m[2];
+			$h = (int)$m[1];
+			$mi = (int)$m[2];
 			if ($h < 24) return sprintf('%02d:%02d', $h, $mi);
 		}
 		return null;
 	}
-/*	private function splitAddress($address) {
+	/*	private function splitAddress($address) {
 		$address = $this->cleanAddress($address);
 		$houseNo = null;
 
@@ -2539,8 +2667,8 @@ $bookings = Booking::select('bookings.*',
 		if (preg_match('/(.+?)\s+(\d+[a-zA-Z]?)/', $text, $m)) return [trim($m[1]), $m[2]];
 		return [$text, null];
 	} */
-	
-/*	private function splitAddress($text)
+
+	/*	private function splitAddress($text)
 	{
 		if (!$text) return [null, null];
 
@@ -2574,7 +2702,5 @@ $bookings = Booking::select('bookings.*',
 		}
 
 		return [$text, null];
-	}*/ 
+	}*/
 }
-
-	
