@@ -17,6 +17,14 @@
         display: flex;
     }
 
+	#booking-buttons {
+        position: sticky;
+        top: 0; /* blijft plakken zodra je scrollt naar de tabel */
+        background: white;
+        z-index: 10;
+        padding: 10px 0;
+    }
+
     .form-container {
         flex: 1;
         padding: 20px;
@@ -217,7 +225,7 @@
 
 	.centered-td {
 		display: flex;
-		justify-content: centerdisplay: flex;; /* Horizontaal centreren */	
+		justify-content: center; /* Horizontaal centreren */	
 	}
 
     tr:nth-child(even) {
@@ -326,7 +334,7 @@
 
 	.no-border-btn {
 		/*background: none !important;*/
-		border: none !important!;
+		border: none !important;
 		background-color: transparent !important;
 		margin: 0px 8px;
 		/*padding: 15px 15px;*/
@@ -401,7 +409,7 @@
         <div class="table-container" id="table-booking">
             <h2>Older Bookings</h2>&nbsp;
 			
-            <div class="buttons-spl" style="display:flex;">		
+            <div class="buttons-spl" id="booking-buttons" style="display:flex;">		
 				@if (Auth::guard('admin')->check()) 
 					@if (Auth::guard('admin')->user()->role === "Admin")
 						<a class="mr-4" href="{{ url('/admin') }}" style="font-size:45px;padding : 10px 0px 10px 0px; color:red;">

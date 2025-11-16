@@ -512,7 +512,13 @@
 												@endphp
 												
 												<!--<a href="{{ $whatsapp_url }}" target="_blank">WhatsApp Chauffeur</a>-->
-											    <a href="{{ url('/admin/whatsapp/' . $booking->id . '/edit') }}" class="btn btn-default btn-icon button">Whatsapp chauffeur</a> 
+											    <a href="{{ url('/admin/whatsapp/' . $booking->id . '/edit') }}" 
+                                                   class="btn btn-default btn-icon button"
+                                                   target="_blank"
+                                                   rel="noopener-noferrer">
+                                                   Whatsapp chauffeur
+                                                </a> 
+                                                
 
 											</div>
 										</div>								
