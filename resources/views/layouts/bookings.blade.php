@@ -34,13 +34,7 @@
     /* Tabel header sticky onder de knoppen */
     
 
-    .table-container table thead tr {
-        position: sticky;
-        top: 60px;  /* hoogte van de buttons-spl div */
-        background: white;
-        z-index: 5; /* minder dan knoppen zodat knoppen boven blijven */
-    }
-
+    
     .form-container {
         flex: 1;
         padding: 20px;
@@ -51,7 +45,6 @@
         padding: 20px;
     }
 
-    
 
     .modal {
         display: none;
@@ -494,31 +487,32 @@
 														</a>
 													</form>  -->												
 												@endif
-												@php
-													$phone = '31' . ltrim($booking->driver_phone, '0');																				
-												/*	if (str_contains($booking->pickup_address, "Schiphol")
-														$pickup = "\n*Vluchtnummer:* ";
-													else
-														$pickup = "\n*Huisnummer:* ";
-													endif
-												$pickup = "\n*Huisnummer:* "; */
-													$message = "Hallo " . $booking->driver_name . "," . "\n\nDeze rit is aan jou toegewezen: " . "\n\n*Datum:* " . $pickupDate->format('D') . " " . $pickupDate->format('d-m-Y') . "\n*Tijd:* " . $booking->pickup_time . "\n*Van:* " . ($booking->pickup_address ?? '') . "\n*Huisnummer:* " . ($booking->house_no_from ?? '') . "\n*Naar:* " . " " . ($booking->destination ?? '') . "\n*Huisnummer* " . ($booking->house_no_to ?? '') . "\n*Naam:* " . $booking->name . "\n*Telefoon:* " . $booking->phone ."\n*Bedrijf:* " . $booking->company . "\n*Prijs:* " . $booking->price . "\n*Code:* " . $booking->price1 . "\n*Mode:* " . $booking->mode . "\n*Pax:* " . $booking->press . "\n*Bagage:* " . $booking->luggage . "\n*Voertuig:* " . ($booking->vehicle ?? '') . "\n*Opmerkingen:* " . $booking->remark;
-													//$whatsapp_url = "https://wa.me/{$phone}?text={$message}";
-													//$whatsapp_url = "https://wa.me/{$phone}?text=" . rawurlencode($message);
-												
-													$whatsapp_url = "https://api.whatsapp.com/send?phone={$phone}&text=" . urlencode($message); 
-													// Forceer * als sterretje (WhatsApp Web heeft soms issues met %2A)
-    												//$message = str_replace('*', '%2A', $message);
-												@endphp
-												
-												<!--<a href="{{ $whatsapp_url }}" target="_blank">WhatsApp Chauffeur</a>-->
-											    <a href="{{ url('/admin/whatsapp/' . $booking->id . '/edit') }}" 
-                                                   class="btn btn-default btn-icon button"
-                                                   target="_blank"
-                                                   rel="noopener-noferrer">
-                                                   Whatsapp chauffeur
-                                                </a> 
-                                                
+                                                @if ($booking->status != 'pending')
+                                                    @php
+                                                        $phone = '31' . ltrim($booking->driver_phone, '0');																				
+                                                    /*	if (str_contains($booking->pickup_address, "Schiphol")
+                                                            $pickup = "\n*Vluchtnummer:* ";
+                                                        else
+                                                            $pickup = "\n*Huisnummer:* ";
+                                                        endif
+                                                    $pickup = "\n*Huisnummer:* "; */
+                                                        $message = "Hallo " . $booking->driver_name . "," . "\n\nDeze rit is aan jou toegewezen: " . "\n\n*Datum:* " . $pickupDate->format('D') . " " . $pickupDate->format('d-m-Y') . "\n*Tijd:* " . $booking->pickup_time . "\n*Van:* " . ($booking->pickup_address ?? '') . "\n*Huisnummer:* " . ($booking->house_no_from ?? '') . "\n*Naar:* " . " " . ($booking->destination ?? '') . "\n*Huisnummer* " . ($booking->house_no_to ?? '') . "\n*Naam:* " . $booking->name . "\n*Telefoon:* " . $booking->phone ."\n*Bedrijf:* " . $booking->company . "\n*Prijs:* " . $booking->price . "\n*Code:* " . $booking->price1 . "\n*Mode:* " . $booking->mode . "\n*Pax:* " . $booking->press . "\n*Bagage:* " . $booking->luggage . "\n*Voertuig:* " . ($booking->vehicle ?? '') . "\n*Opmerkingen:* " . $booking->remark;
+                                                        //$whatsapp_url = "https://wa.me/{$phone}?text={$message}";
+                                                        //$whatsapp_url = "https://wa.me/{$phone}?text=" . rawurlencode($message);
+                                                    
+                                                        $whatsapp_url = "https://api.whatsapp.com/send?phone={$phone}&text=" . urlencode($message); 
+                                                        // Forceer * als sterretje (WhatsApp Web heeft soms issues met %2A)
+                                                        //$message = str_replace('*', '%2A', $message);
+                                                    @endphp
+                                                    
+                                                    <!--<a href="{{ $whatsapp_url }}" target="_blank">WhatsApp Chauffeur</a>-->
+                                                    <a href="{{ url('/admin/whatsapp/' . $booking->id . '/edit') }}" 
+                                                    class="btn btn-default btn-icon button"
+                                                    target="_blank"
+                                                    rel="noopener-noferrer">
+                                                    Whatsapp chauffeur
+                                                    </a> 
+                                                @endif
 
 											</div>
 										</div>								
@@ -936,9 +930,13 @@
 		
 			$(".return-booking").click(function(event) {
 				event.preventDefault();
-				//var url = $(this).attr('href');
+				
+                // Scrollpositie opslaan in localStorage
+                localStorage.setItem('scrollBookings', window.scrollY);
+                localStorage.setItem('activeCompleted', 'Active');
+
 				var bookingId = $(this).data('booking-id');
-        		var url = "/admin/bookings/" + bookingId + "/retFlight";
+        		var url = "/admin/bookings/" + bookingId + "/retFlight?tab=active";
 				$("#example5").hide();
 				$("#editbooking-section").hide();
 				$("#addbooking-section").hide();
@@ -956,7 +954,7 @@
                 // Scrollpositie opslaan in localStorage
                 localStorage.setItem('scrollBookings', window.scrollY);
                 localStorage.setItem('activeCompleted', 'Active');
-				//var url = $(this).attr('href');
+				
 				var bookingId = $(this).data('booking-id');
         		                
                 var url = "/admin/bookings/" + bookingId + "/edit?tab=active";
@@ -973,9 +971,13 @@
 	
 			$(".copy-booking").click(function(event) {
 				event.preventDefault();
-				//var url = $(this).attr('href');
+				
+                // Scrollpositie opslaan in localStorage
+                localStorage.setItem('scrollBookings', window.scrollY);
+                localStorage.setItem('activeCompleted', 'Active');
+
 				var bookingId = $(this).data('booking-id');
-        		var url = "/admin/bookings/" + bookingId + "/copy2";
+        		var url = "/admin/bookings/" + bookingId + "/copy2?tab=active";
 				$("#example5").hide();
 				$("#addbooking-section").hide();
 				$("#returnbooking-section").hide();	
