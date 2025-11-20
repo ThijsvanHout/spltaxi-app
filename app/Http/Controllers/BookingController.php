@@ -225,8 +225,21 @@ $bookings = Booking::select('bookings.*',
 			});
 
 			Session::flash('success', 'Driver assigned successfully');
+
+			$tab = $request->query('tab');  // 'active' of 'completed'
+
+			if ($tab === 'completed') {
+				return redirect()->route('completed-bookings.index');
+			}
+
 			return redirect()->route('bookings.index');
 		} else {
+			$tab = $request->query('tab');  // 'active' of 'completed'
+
+			if ($tab === 'completed') {
+				return redirect()->route('completed-bookings.index');
+			}
+
 			return redirect()->route('bookings.index');
 		}
 

@@ -56,7 +56,7 @@
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.7);
-        z-index: 1;
+        z-index: 9999;
         overflow: auto;
     }
 
@@ -389,8 +389,8 @@
                             <i class="bi bi-house-door-fill"></i>
                         </a>
                         <!--<a  href="{{ url('/admin/bookings/create') }}"  style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;" >
-           <i class="bi bi-plus-lg" ></i>
-          </a>-->
+                                   <i class="bi bi-plus-lg" ></i>
+                                  </a>-->
                         <a href="" id="add-booking"
                             style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;">
                             <i class="bi bi-plus-lg"></i>
@@ -471,18 +471,18 @@
 
 
                                                     <!-- <a href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-                  Return Booking
-                 </a> -->
+                                          Return Booking
+                                         </a> -->
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="return-booking">Return Booking</a>
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="copy-booking">Copy</a>
                                                     <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}">
-                  Copy</a>-->
+                                          Copy</a>-->
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="edit-booking">Edit</a>
                                                     <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                  >Edit</a>-->
+                                          >Edit</a>-->
                                                     <div class="user-receipt-dropdown">
                                                         <button type="button"
                                                             class="no-border-btn btn-block bg-gradient-primary"
@@ -506,13 +506,13 @@
                                                         </div>
                                                     </div>
                                                     <!--	<form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                  @csrf
-                  @method('DELETE')
-                  <a href="" type="submit"
-                   onclick="return confirm('Are you sure you want to delete this record?')">
-                   Delete
-                  </a>
-                 </form>  -->
+                                          @csrf
+                                          @method('DELETE')
+                                          <a href="" type="submit"
+                                           onclick="return confirm('Are you sure you want to delete this record?')">
+                                           Delete
+                                          </a>
+                                         </form>  -->
                                                 @endif
                                                 @if ($booking->status != 'pending')
                                                     @php
@@ -1203,42 +1203,42 @@
 
 
         /*    function showPosition(position) {
-    			//console.log("showPosition called with position:", position); // Debug
-                var lat = position.coords.latitude;
-                var lng = position.coords.longitude;
-                var geocoder = new google.maps.Geocoder();
-                var latLng = new google.maps.LatLng(lat, lng);
-                geocoder.geocode({
-                    'latLng': latLng
-                }, function(results, status) {
-    				console.log("Geocode results:", results, "Status:", status); // Debug
-                    if (status === google.maps.GeocoderStatus.OK) {
-    					
-                        if (results[0]) {
-    						console.log("Result found:", results[0]); // Debug
-                            //document.getElementsByClassName('pg-autocomplete')[0].value = results[0].formatted_address;
-    						var input = document.getElementsByClassName('pg-autocomplete')[0];
-                    input.value = results[0].formatted_address;
+        			//console.log("showPosition called with position:", position); // Debug
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    var geocoder = new google.maps.Geocoder();
+                    var latLng = new google.maps.LatLng(lat, lng);
+                    geocoder.geocode({
+                        'latLng': latLng
+                    }, function(results, status) {
+        				console.log("Geocode results:", results, "Status:", status); // Debug
+                        if (status === google.maps.GeocoderStatus.OK) {
+        					
+                            if (results[0]) {
+        						console.log("Result found:", results[0]); // Debug
+                                //document.getElementsByClassName('pg-autocomplete')[0].value = results[0].formatted_address;
+        						var input = document.getElementsByClassName('pg-autocomplete')[0];
+                        input.value = results[0].formatted_address;
 
-    						
-    						  // Check if the address contains "Schiphol"
-    						  if (results[0].formatted_address.includes('Schiphol')) {
-    							  alert("Schiphol");
-    							document.getElementById('house-to').style.display = 'none';
-    						  } else {
-    							  alert("geen schiphol");
-    							document.getElementById('house-to').style.display = 'block';
-    						  }
-    						
-    						// Manueel de change event triggeren
-    						// Manueel de change event triggeren
-                    var event = new Event('change');
-                    input.dispatchEvent(event);
+        						
+        						  // Check if the address contains "Schiphol"
+        						  if (results[0].formatted_address.includes('Schiphol')) {
+        							  alert("Schiphol");
+        							document.getElementById('house-to').style.display = 'none';
+        						  } else {
+        							  alert("geen schiphol");
+        							document.getElementById('house-to').style.display = 'block';
+        						  }
+        						
+        						// Manueel de change event triggeren
+        						// Manueel de change event triggeren
+                        var event = new Event('change');
+                        input.dispatchEvent(event);
+                            }
+        					else alert("geen results[0]");
                         }
-    					else alert("geen results[0]");
-                    }
-                });
-            } */
+                    });
+                } */
 
         // Initialiseer de autocomplete als het script geladen is
         document.addEventListener('DOMContentLoaded', initAutocomplete);
@@ -1264,7 +1264,7 @@
                         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                         xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector(
                             'meta[name="csrf-token"]').getAttribute(
-                        'content')); // Assuming you have a meta tag for csrf-token
+                            'content')); // Assuming you have a meta tag for csrf-token
 
                         xhr.onload = function() {
                             if (this.status === 200) {
