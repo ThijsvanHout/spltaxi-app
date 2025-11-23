@@ -424,31 +424,16 @@
                             style="font-size:45px;padding : 10px 0px 10px 0px; color:red;">
                             <i class="bi bi-house-door-fill"></i>
                         </a>
-                        <!--<a  href="{{ url('/admin/bookings/create') }}"  style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;" >
-           <i class="bi bi-plus-lg" ></i>
-          </a>-->
                         <a href="" id="add-booking"
                             style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;">
                             <i class="bi bi-plus-lg"></i>
                         </a>
                     @endif
                 @endif
-                <!--<a href="{{ url('/admin') }}"><button class="btn-grad">Back To Home</button></a>-->
                 <a href="{{ url('/admin/bookings') }}"><button class="btn-grad ">Active Bookings</button></a>
                 <a href="{{ route('completedbookings') }}"><button class="btn-grad">Older Bookings</button></a>
 
-                <!--<form action="{{ route('bookings-filter') }}" method="POST" id="filterForm">
-         @csrf
-         <select name="chauffeur" id="chauffeur" class="dropbtn">
-          <option value="" class="dropdown-content" >Choose a driver</option>
-          @foreach ($drivers as $driver)
-    <option value="{{ $driver->id }}">{{ $driver->name }}</option>
-    @endforeach
-         </select>
-        </form>
-        
-
-        <a href="{{ route('onaccountcompbookings') }}"><button class="btn-grad">On Account</button></a>-->
+                <a href="{{ route('onaccountcompbookings') }}"><button class="btn-grad">On Account</button></a>
                 <form action="{{ route('bookings-filterPeriod') }}" method="POST" id="filterPeriodForm">
                     @csrf
                     <table class="booktable" border="1">
@@ -505,25 +490,6 @@
                                             @endforeach
                                         </select>
                                     </td>
-
-                                    {{--	<td>
-									<select class="select-driver" name="company" id="company">
-										<option value="" class="" >Choose a company</option>
-										<option value="Easy Rider">Easy Rider</option>
-										<option value="Massive Music">Massive Music</option>
-										<option value="TCA">TCA</option>
-										<option value="Hans Brouwer Prive">Hans Brouwer Prive</option>					
-										<option value="Joep Beving Sonderling b.v. ">Joep Beving Sonderling b.v. </option>
-										<option value="Stichting Holland Festival">Stichting Holland Festival</option>
-										<option value="Wiser Globe">Wiser Globe</option>
-										<option value="Politie">Politie</option>
-										<option value="Kevlinx Holding BV ">Kevlinx Holding BV </option>
-										<option value="Stichting Flamenco Biënnale ">Stichting Flamenco Biënnale </option>
-										<option value="Safar Limo Service">Safar Limo Service</option>
-										<option value="Vereniging Hoge Scholen">Vereniging Hoge Scholen</option>
-										<option value="The Recess College">The Recess College</option>
-									</select>
-								</td> --}}
                                     <td class="filter-table">
                                         <label for="checkbox">On account:</label>
                                         <input type="checkbox" name="onaccount" id="checkbox">
@@ -615,20 +581,12 @@
                                                     Complete
                                                 </button>
 
-
-                                                <!-- <a href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-                 Return Booking
-                </a> -->
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="return-booking">Return Booking</a>
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="copy-booking">Copy</a>
-                                                <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}">
-                 Copy</a>-->
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="edit-booking">Edit</a>
-                                                <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                >Edit</a>	-->
                                                 <div class="user-receipt-dropdown">
                                                     <button type="button"
                                                         class="no-border-btn btn-block bg-gradient-primary"
@@ -650,14 +608,6 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                <!-- <form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                 @csrf
-                 @method('DELETE')
-                 <a href="" type="submit"
-                 onclick="return confirm('Are you sure you want to delete this record?')">
-                 Delete
-                 </a>
-                 </form> -->
                                                 @php
                                                     $phone = '31' . ltrim($booking->driver_phone, '0');
                                                     $message =
@@ -700,15 +650,12 @@
                                                         ($booking->vehicle ?? '') .
                                                         "\n*Opmerkingen:* " .
                                                         $booking->remark;
-                                                    //$whatsapp_url = "https://wa.me/{$phone}?text={$message}";
                                                     $whatsapp_url =
                                                         "https://wa.me/{$phone}?text=" . rawurlencode($message);
-                                                    //$whatsapp_url = "https://api.whatsapp.com/send?phone={$phone}&text=" . urlencode($message);
                                                     // Forceer * als sterretje (WhatsApp Web heeft soms issues met %2A)
                                                     //$message = str_replace('*', '%2A', $message);
                                                 @endphp
 
-                                                <!--<a href="{{ $whatsapp_url }}" target="_blank">WhatsApp Chauffeur</a>-->
                                                 <a href="{{ url('/admin/whatsapp/' . $booking->id . '/edit') }}"
                                                     class="btn btn-default btn-icon button">Whatsapp chauffeur</a>
                                             </div>
@@ -884,56 +831,14 @@
                                     </td>
                                 @endif
                             @endif
-                            {{-- <td class="d-flex">
-                          
-                         
-                                @if (($booking->status == 'pending' && $booking->assign_id == '') || $booking->status == 'Rejected')
-                                    <button type="button" class="btn-grads btn-block bg-gradient-primary assign-btn myBtn"
-                                        data-toggle="modal" data-id="{{ $booking->id }}"
-                                        data-target="#assignDriverModal">Assign</button>
-                                @else
-                                    <button type="button" disabled
-                                        class="btn-grads btn-block bg-gradient-primary assign-btn" data-toggle="modal"
-                                        data-id="{{ $booking->id }}" data-target="#assignDriverModal">Assigned</button>
-                                @endif
-                                
-                                <button type="button" class="btn-grads btn-block bg-gradient-primary complete-ride-btn" data-id="{{ $booking->id }}">Complete</button>
-								<!--<a href="" class="btn-grads btn-default btn-icon button" data-toggle="modal" data-id="{{ $booking->id }}"
-                                        data-target="#copyModal">
-							            <i class="fas fa-edit">Copy</i></a>-->
-								@if (strpos($booking->destination, 'Schiphol') !== false)
-									<button class="btn-grads btn-default btn-icon button ml-1">
-										<a class="btn-white" href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-											<i class="fas fa-edit">Return Flight</i>
-										</a>	
-									</button>			
-								@endif
-								<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}"
-                                    class="btn-grads btn-default btn-icon button"><i class="fas fa-edit">Copy</i></a>
-                                <a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                                    class="btn-grads btn-default btn-icon button"><i class="fas fa-edit">Edit</i></a>
-                                <form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-grads btn-default btn-icon button ml-1"
-                                        onclick="return confirmDelete('{{ $booking->name }}', '{{ $booking->date }}', '{{ $booking->time }}',  '{{ $booking->pickup_address }}', '{{ $booking->house_no_from }}', '{{ $booking->destination }}', '{{ $booking->house_no_to }}' )">
-
-                                        <i class="fas fa-trash">Delete</i>
-                                    </button>
-                                </form>	    
-                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-
-
             <!--</table>-->
         </div>
 
-
         <!-- Form Container -->
-
     </div>
 
     <div id="addbooking-section" style="display: none;">
@@ -1001,7 +906,6 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="copyModalLabel">{{ $booking }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <!--<span aria-hidden="true">&times;</span>-->
                     </button>
                 </div>
                 <div class="modal-body">
@@ -1009,11 +913,6 @@
                     <div class="container table-responsive">
                         <form action="{{ route('bookings.store') }}" method="POST">
                             @csrf
-                            <!--<input type="hidden" id="id" name="id" value="{{ $booking->id }}">-->
-
-
-
-
                             <table class="table table-responsive table-bordered">
                                 <tr>
                                     <td><b>Date, Time </b></td>
@@ -1126,13 +1025,6 @@
                                             value="{{ $booking->name }}" id="uname" class="form-control"
                                             placeholder="Enter Your Name"></td>
                                 </tr>
-                                {{-- <tr>
-									<td><b>Customer</b></td>
-									<td colspan="5"><input type="text" value="{{ $booking->customer }}" name="customer"
-											id="customer" class="form-control"></td>
-								</tr> --}}
-
-
                                 <tr>
                                     <td><b>Remark</b></td>
                                     <td colspan="5">
@@ -1179,15 +1071,7 @@
                                     <button type="submit" class="btn btn-primary">Add</button>
                                 </div>
                             </div>
-
-
-
-
-
-
-
                         </form>
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1219,9 +1103,12 @@
 
         $(".return-booking").click(function(event) {
             event.preventDefault();
-            //var url = $(this).attr('href');
+
+            localStorage.setItem('scrollBookings', window.scrollY);
+            localStorage.setItem('activeCompleted', 'Completed');
+
             var bookingId = $(this).data('booking-id');
-            var url = "/admin/bookings/" + bookingId + "/retFlight";
+            var url = "/admin/bookings/" + bookingId + "/retFlight?tab=completed";
             $("#example5").hide();
             $("#addbooking-section").hide();
             $("#editbooking-section").hide();
@@ -1257,9 +1144,12 @@
 
         $(".copy-booking").click(function(event) {
             event.preventDefault();
-            //var url = $(this).attr('href');
+
+            localStorage.setItem('scrollBookings', window.scrollY);
+            localStorage.setItem('activeCompleted', 'Completed');
+
             var bookingId = $(this).data('booking-id');
-            var url = "/admin/bookings/" + bookingId + "/copy2";
+            var url = "/admin/bookings/" + bookingId + "/copy2?tab=completed";
             $("#example5").hide();
             $("#addbooking-section").hide();
             $("#returnbooking-section").hide();
@@ -1322,19 +1212,10 @@
             }
         }
     </script>
-    <!-- <script async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl5y2ApdvxYPlUKgXQnO7SdaYExoxA-AQ&libraries=places&callback=initAutocomplete">
-        src =
-            "https://maps.googleapis.com/maps/api/js?key=AIzaSyAvebq2jX4RZusozpW8CFlQHtfVEIZkuRg&libraries=places&callback=initAutocomplete" >
-    </script> -->
+
     <script async
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvebq2jX4RZusozpW8CFlQHtfVEIZkuRg&libraries=places&callback=initAutocomplete">
     </script>
-
-
-
-
-
 
     <script>
         // Get the select element and input fields
@@ -1416,12 +1297,6 @@
                     navigator.geolocation.getCurrentPosition(showPosition);
                 }
             });
-            /*$(".pg-track-location").on("click", function() {
-            	if (navigator.geolocation) {
-            		navigator.geolocation.getCurrentPosition(showPosition);
-            	}
-            }); */
-
         }
 
         function showPosition(position) {
@@ -1460,7 +1335,7 @@
                         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                         xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector(
                             'meta[name="csrf-token"]').getAttribute(
-                        'content')); // Assuming you have a meta tag for csrf-token
+                            'content')); // Assuming you have a meta tag for csrf-token
 
                         xhr.onload = function() {
                             if (this.status === 200) {

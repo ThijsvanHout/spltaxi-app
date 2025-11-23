@@ -388,9 +388,6 @@
                             style="font-size:45px;padding : 10px 0px 10px 0px; color:red;">
                             <i class="bi bi-house-door-fill"></i>
                         </a>
-                        <!--<a  href="{{ url('/admin/bookings/create') }}"  style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;" >
-                                   <i class="bi bi-plus-lg" ></i>
-                                  </a>-->
                         <a href="" id="add-booking"
                             style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;">
                             <i class="bi bi-plus-lg"></i>
@@ -469,20 +466,12 @@
                                                         class="no-border-btn btn-block bg-gradient-primary complete-ride-btn"
                                                         data-id="{{ $booking->id }}">Complete</button>
 
-
-                                                    <!-- <a href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-                                          Return Booking
-                                         </a> -->
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="return-booking">Return Booking</a>
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="copy-booking">Copy</a>
-                                                    <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}">
-                                          Copy</a>-->
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="edit-booking">Edit</a>
-                                                    <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                                          >Edit</a>-->
                                                     <div class="user-receipt-dropdown">
                                                         <button type="button"
                                                             class="no-border-btn btn-block bg-gradient-primary"
@@ -505,24 +494,17 @@
                                                             @endif
                                                         </div>
                                                     </div>
-                                                    <!--	<form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                                          @csrf
-                                          @method('DELETE')
-                                          <a href="" type="submit"
-                                           onclick="return confirm('Are you sure you want to delete this record?')">
-                                           Delete
-                                          </a>
-                                         </form>  -->
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a href="" type="submit"
+                                                        onclick="return confirm('Are you sure you want to delete this record?')">
+                                                        Delete
+                                                    </a>
+                                                    </form> -->
                                                 @endif
                                                 @if ($booking->status != 'pending')
                                                     @php
                                                         $phone = '31' . ltrim($booking->driver_phone, '0');
-                                                        /*	if (str_contains($booking->pickup_address, "Schiphol")
-                                                            $pickup = "\n*Vluchtnummer:* ";
-                                                        else
-                                                            $pickup = "\n*Huisnummer:* ";
-                                                        endif
-                                                    $pickup = "\n*Huisnummer:* "; */
                                                         $message =
                                                             'Hallo ' .
                                                             $booking->driver_name .
@@ -563,8 +545,6 @@
                                                             ($booking->vehicle ?? '') .
                                                             "\n*Opmerkingen:* " .
                                                             $booking->remark;
-                                                        //$whatsapp_url = "https://wa.me/{$phone}?text={$message}";
-                                                        //$whatsapp_url = "https://wa.me/{$phone}?text=" . rawurlencode($message);
 
                                                         $whatsapp_url =
                                                             "https://api.whatsapp.com/send?phone={$phone}&text=" .
@@ -573,7 +553,7 @@
                                                         //$message = str_replace('*', '%2A', $message);
                                                     @endphp
 
-                                                    <!--<a href="{{ $whatsapp_url }}" target="_blank">WhatsApp Chauffeur</a>-->
+
                                                     <a href="{{ url('/admin/whatsapp/' . $booking->id . '/edit') }}"
                                                         class="btn btn-default btn-icon button" target="_blank"
                                                         rel="noopener-noferrer">
@@ -752,53 +732,11 @@
                                     </td>
                                 @endif
                             @endif
-                            {{-- <td class="d-flex">
-                          
-                            @if ($booking->status != 'Completed')
-                                @if (($booking->status == 'pending' && $booking->assign_id == '') || $booking->status == 'Rejected')
-                                    <button type="button" class="btn-grads btn-block bg-gradient-primary assign-btn myBtn"
-                                        data-toggle="modal" data-id="{{ $booking->id }}"
-                                        data-target="#assignDriverModal">Assign</button>
-                                @else
-                                    <button type="button" 
-                                        class="btn-grads btn-block bg-gradient-primary assign-btn myBtn" data-toggle="modal"
-                                        data-id="{{ $booking->id }}" data-target="#assignDriverModal">Assigned</button>
-                                @endif
-                                
-                                <button type="button" class="btn-grads btn-block bg-gradient-primary complete-ride-btn" data-id="{{ $booking->id }}">Complete</button>
-								
-								@if (strpos($booking->destination, 'Schiphol') !== false)
-									<button class="btn-grads btn-default btn-icon button ml-1">
-										<a class="btn-white" href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-											<i class="fas fa-edit">Return Flight</i>
-										</a>	
-									</button>
-								@endif
-                                <a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}"
-                                    class="btn-grads btn-default btn-icon button"><i class="fas fa-edit">Copy</i></a>
-
-                                <a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                                    class="btn-grads btn-default btn-icon button"><i class="fas fa-edit">Edit</i></a>
-                                <form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-grads btn-default btn-icon button ml-1"
-                                        onclick="return confirm('Are you sure you want to delete this record?')">
-                                        <i class="fas fa-trash">Delete</i>
-                                    </button>
-                                </form>
-
-                            @endif
-                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-
-
-
-
     </div>
 
     <div id="addbooking-section" style="display: none;">
@@ -849,8 +787,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        {{-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> --}}
-
                         <button type="submit" id="assignDriverButton" class="btn-grad">Assign Driver</button>
                     </div>
                 </form>
@@ -911,75 +847,6 @@
             submenu.style.display = submenu.style.display === 'none' ? 'block' : 'none';
         }
     </script>
-
-
-
-
-
-
-    {{-- <script>
-    const modal = document.getElementById("myModal");
-    const openModalBtn = document.getElementById("openModalBtn");
-
-    // Function to open the modal
-    function openModal() {
-        modal.style.display = "block";
-    }
-
-    // Function to close the modal
-    function closeModal() {
-        modal.style.display = "none";
-    }
-
-    // Add a click event listener to the button
-    openModalBtn.addEventListener("click", openModal);
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Find all elements with the class 'assign-btn'
-        
-        var assignButtons = document.querySelectorAll('.assign-btn');
-
-        // Add a click event listener to each assign button
-        assignButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-              // alert("Zaid");
-                // Get the data-id attribute value
-                var bookingId = this.getAttribute('data-id');
-                console.log(bookingId, "=====wewewew");
-
-                // Find the booking_id input field in the modal and set its value
-                var bookingIdInput = document.querySelector('#assignDriverModal #booking_id');
-                if (bookingIdInput) {
-                    bookingIdInput.value = bookingId;
-                }
-            });
-        });
-    });
-</script> --}}
-
-    {{-- <script>
-        $('#assignDriverForm').on('submit', function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: '{{ route('admin/assign-driver') }}',
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    window.location.reload();
-                    // Close the modal
-                    $('#myModal').modal('hide');
-                    if (response.message == "Driver assigned successfully") {
-                        window.location.reload();
-                    }
-                    // Show a success message or refresh the page
-                    // alert(url);
-                }
-            });
-        });
-    </script> --}}
-
-
 
     <script>
         $('#chauffeur').change(function() {
@@ -1057,8 +924,6 @@
 
         });
 
-
-
         // Get the select element and input fields
         const choiceSelect = document.getElementById('choice');
         const input1 = document.getElementById('flight_date');
@@ -1114,11 +979,6 @@
             }
             toggleInputValidation();
         });
-        /*document.getElementById('choice-add').addEventListener('change', toggleInputValidation);
-        document.getElementById('choice-copy').addEventListener('change', toggleInputValidation);
-        document.getElementById('choice-edit').addEventListener('change', toggleInputValidation);
-        document.getElementById('choice-return').addEventListener('change', toggleInputValidation);*/
-
 
         // Trigger the function when the page is fully loaded
         document.addEventListener('DOMContentLoaded', function() {
@@ -1137,16 +997,7 @@
                 fields: ["formatted_address", "geometry", "name", "address_components", "icon"],
             };
             var inputs = document.getElementsByClassName('pg-autocomplete');
-            /*	inputs.forEach(function(input) {
-            		if (!input.autocompleteInstance) { // alleen als er nog geen instance is
-            			input.autocompleteInstance = new google.maps.places.Autocomplete(input, options);
 
-            			input.autocompleteInstance.addListener("place_changed", function() {
-            				var place = this.getPlace();
-            				alert("Gekozen adres: " + place.formatted_address);
-            			});
-            		}
-            	}); */
             for (var i = 0; i < inputs.length; i++) {
                 new google.maps.places.Autocomplete(inputs[i], options);
             }
@@ -1199,46 +1050,6 @@
                 console.error("Error in showPosition:", error); // Debug
             }
         }
-
-
-
-        /*    function showPosition(position) {
-        			//console.log("showPosition called with position:", position); // Debug
-                    var lat = position.coords.latitude;
-                    var lng = position.coords.longitude;
-                    var geocoder = new google.maps.Geocoder();
-                    var latLng = new google.maps.LatLng(lat, lng);
-                    geocoder.geocode({
-                        'latLng': latLng
-                    }, function(results, status) {
-        				console.log("Geocode results:", results, "Status:", status); // Debug
-                        if (status === google.maps.GeocoderStatus.OK) {
-        					
-                            if (results[0]) {
-        						console.log("Result found:", results[0]); // Debug
-                                //document.getElementsByClassName('pg-autocomplete')[0].value = results[0].formatted_address;
-        						var input = document.getElementsByClassName('pg-autocomplete')[0];
-                        input.value = results[0].formatted_address;
-
-        						
-        						  // Check if the address contains "Schiphol"
-        						  if (results[0].formatted_address.includes('Schiphol')) {
-        							  alert("Schiphol");
-        							document.getElementById('house-to').style.display = 'none';
-        						  } else {
-        							  alert("geen schiphol");
-        							document.getElementById('house-to').style.display = 'block';
-        						  }
-        						
-        						// Manueel de change event triggeren
-        						// Manueel de change event triggeren
-                        var event = new Event('change');
-                        input.dispatchEvent(event);
-                            }
-        					else alert("geen results[0]");
-                        }
-                    });
-                } */
 
         // Initialiseer de autocomplete als het script geladen is
         document.addEventListener('DOMContentLoaded', initAutocomplete);
