@@ -1255,7 +1255,7 @@ $bookings = Booking::select('bookings.*',
 			DB::transaction(function () use ($request, $booking) {
 
 				// Zoek of er al een driver_booking voor deze booking bestaat
-				$driverBooking = DriverBooking::where('booking_id', $booking->id)->first();
+				$driverBooking = DriverBooking::where('id', $booking->assign_id)->first();
 
 				if ($driverBooking) {
 					// Alleen de driver_id aanpassen
@@ -1271,8 +1271,10 @@ $bookings = Booking::select('bookings.*',
 
 					// Koppeling naar booking pas zetten bij nieuwe aanmaak
 					$booking->assign_id = $driverBooking->id;
-					$booking->status = 'Assigned';
-					$booking->save();
+					if ($booking->status !== 'Completed') {
+						$booking->status = 'Assigned';
+						$booking->save();
+					}
 				}
 
 				// Door de transactie hoef je niet te wachten of create klaar is:
