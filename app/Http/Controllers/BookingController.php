@@ -1230,26 +1230,6 @@ $bookings = Booking::select('bookings.*',
 		$booking->vehicle = $request->input('vehicle');
 
 		//driver ingevuld, nnieuw of update
-		/*	if ($request->input('driver_id') !== null){	
-			$driverBooking = DriverBooking::where('booking_id', $request->id)->first();
-			if ($driverBooking) {
-				$driverBooking->driver_id = (int) $request->driver_id;
-				$driverBooking->save();
-			}
-			else {
-				$driverBooking = DriverBooking::create([
-					'driver_id' => (int) $request->driver_id,
-					'booking_id' => $booking->id,
-					'status' => 'Pending'
-				]);
-				
-				if ($driverBooking) {
-					$booking->assign_id = $driverBooking->id;
-					$booking->status = 'Assigned';
-				}
-			}			
-		} */
-
 		if ($request->filled('driver_id')) {
 
 			DB::transaction(function () use ($request, $booking) {
