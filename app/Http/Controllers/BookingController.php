@@ -1271,8 +1271,10 @@ $bookings = Booking::select('bookings.*',
 
 					// Koppeling naar booking pas zetten bij nieuwe aanmaak
 					$booking->assign_id = $driverBooking->id;
-					$booking->status = 'Assigned';
-					$booking->save();
+					if ($booking->status !== 'Completed') {
+						$booking->status = 'Assigned';
+						$booking->save();
+					}
 				}
 
 				// Door de transactie hoef je niet te wachten of create klaar is:
