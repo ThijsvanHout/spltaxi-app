@@ -111,12 +111,29 @@ $bookings = Booking::select('bookings.*',
 
 		$bookings->pickup_address = $request['pickup_address'];
 		if (strpos(strtolower($request['pickup_address']), 'schiphol') !== false) {
-			$bookings->house_no_from = $request['flight_no'];
+			if (preg_match('/^Flight *$/', $request['flight_no'])) {
+				$bookings->house_no_from = $request['house_no_from'];
+			} else {
+				$bookings->house_no_from = $request['flight_no'];
+			}
 		} else {
 			$bookings->house_no_from = $request['house_no_from'];
 		}
 		$bookings->destination = $request['to'];
-		$bookings->house_no_to = $request['house_no_to'];
+		if (strpos(strtolower($request['to']), 'schiphol') !== false) {
+			if (preg_match('/^Flight *$/', $request['flight_no_to'])) {
+				if (preg_match('/^House no *$/', $request['house_no_to'])) {
+					$bookings->house_no_to = "";
+				} else {
+					$bookings->house_no_to = $request['house_no_to'];
+				}
+			} else {
+				$bookings->house_no_to = $request['flight_no_to'];
+			}
+		} else {
+			$bookings->house_no_to = $request['house_no_to'];
+		}
+
 
 		$bookings->pickup_date = $request['pickup_date'];
 		$bookings->pickup_time = $request['pickup_time'];
