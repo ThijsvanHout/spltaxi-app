@@ -55,8 +55,16 @@
             </tr>
             <tr>
                 <td></td>
-                <td><input type="text" value="{{ $booking->house_no_from }}" value="{{ $booking->house_no_from }}"
-                        required class="form-control" value="" name="house_no_from" placeholder="House/Flight No">
+                <td colspan="1">
+                    @if (strpos(strtolower($booking->pickup_address), 'schiphol') !== false)
+                        <input type="text" value="{{ $booking->house_no_from }}" placeholder="To House From "
+                            class="form-control" name="flight_no">
+                        <input type="text" value="" hidden class="form-control" name="house_no_from">
+                    @else
+                        <input type="text" value="{{ $booking->house_no_from }}" placeholder="To House From "
+                            class="form-control" name="house_no_from">
+                        <input type="text" value="" hidden class="form-control" name="flight_no">
+                    @endif
                 </td>
             </tr>
             <tr>
@@ -67,10 +75,17 @@
             </tr>
             <tr id="schiphol">
                 <td></td>
-                <td colspan="1"><input type="text" required class="form-control" id="house_to"
-                        value="{{ $booking->house_no_to }}" name="house_no_to" value="-" placeholder="House No.">
+                <td colspan="1">
+                    @if (strpos(strtolower($booking->destination), 'schiphol') !== false)
+                        <input type="text" value="{{ $booking->house_no_to }} " placeholder="To House No "
+                            class="form-control" name="flight_no_to">
+                        <input type="text" value="" hidden class="form-control" name="house_no_to">
+                    @else
+                        <input type="text" value="{{ $booking->house_no_to }}" placeholder="To House No "
+                            class="form-control" name="house_no_to" id="to1">
+                        <input type="text" value="" hidden class="form-control" name="flight_no_to">
+                    @endif
                 </td>
-
             </tr>
             <tr>
                 <td><b>Price Customer</b></td>
@@ -95,8 +110,10 @@
                         </option>
                         <option value="Credit Card" @if ($booking->mode === 'Credit Card') selected @endif>Credit Card
                         </option>
-                        <option value="Remittance" @if ($booking->mode === 'Remittance') selected @endif>Remittance</option>
-                        <option value="No Payment" @if ($booking->mode === 'No Payment') selected @endif>No Payment</option>
+                        <option value="Remittance" @if ($booking->mode === 'Remittance') selected @endif>Remittance
+                        </option>
+                        <option value="No Payment" @if ($booking->mode === 'No Payment') selected @endif>No Payment
+                        </option>
                     </select>
                 </td>
             </tr>
@@ -149,8 +166,7 @@
             <tr>
                 <td><b>Remark</b></td>
                 <td colspan="1">
-                    <textarea class="form-control" name="remark" cols="10" id="remark" placeholder="Enter Remark"
-                        value="{{ $booking->remark }}"></textarea>
+                    <textarea class="form-control" name="remark" cols="10" id="remark" placeholder="Enter Remark">{{ $booking->remark }}</textarea>
                 </td>
             </tr>
             <tr>
@@ -213,7 +229,7 @@
             <div>
                 <button class="btn btn-primary"><a href="#" id="cancel-btn"
                         style="color:white;">Cancel</a></button>
-                <button type="submit" class="btn btn-primary">Update</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </div>
 
