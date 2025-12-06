@@ -72,6 +72,7 @@
                             placeholder="To House From " class="form-control" name="house_no_from" id="from1">
                         <input type="text" value="Flight " hidden class="form-control" name="house_no_from">
                     @endif
+                </td>
             </tr>
             <tr>
                 <td><b>To</b></td>
@@ -99,16 +100,18 @@
                 <td><b>Price Customer</b></td>
                 <td>
                     <div class="input-group mb-2">
-                        <input type="text" name="price" value="{{ $booking->price }}" id="price"
-                            class="form-control">
+                        <input type="text" name="price"
+                            value="{{ $booking->price === null || $booking->price === '' ? '€ ' : $booking->price }}"
+                            id="price" class="form-control">
                     </div>
                 </td>
             </tr>
             <tr>
                 <td><b>Price Taxi</b></td>
                 <td>
-                    <input type="text" name="price1" value="{{ $booking->price1 }}" id="price1"
-                        class="form-control">
+                    <input type="text" name="price1"
+                        value="{{ $booking->price1 === null || $booking->price1 === '' ? 'Code € ' : $booking->price1 }}"
+                        id="price1" class="form-control">
                 </td>
             </tr>
             <tr>
@@ -156,15 +159,17 @@
             <tr>
                 <td><b>Person(s)</b></td>
                 <td>
-                    <input type="text" value="{{ $booking->press }}" class="form-control" name="press"
-                        id="press" placeholder="Enter No of Passenger">
+                    <input type="text"
+                        value="{{ $booking->press === null || $booking->press === '' ? 'Pax ' : $booking->press }}"
+                        class="form-control" name="press" id="press" placeholder="Enter No of Passenger">
                 </td>
             </tr>
             <tr>
                 <td><b>Luggage</b></td>
                 <td colspan="1">
-                    <input type="text" value="{{ $booking->luggage }}" name="luggage" id="luggage"
-                        class="form-control" placeholder="Enter No of Luggage">
+                    <input type="text"
+                        value="{{ $booking->luggage === null || $booking->luggage === '' ? 'Luggage ' : $booking->luggage }}"
+                        name="luggage" id="luggage" class="form-control" placeholder="Enter No of Luggage">
                 </td>
             </tr>
             <tr>
