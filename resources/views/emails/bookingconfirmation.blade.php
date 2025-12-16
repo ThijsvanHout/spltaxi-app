@@ -11,8 +11,17 @@
 
     <p><strong>Date, Time:</strong> {{ $bookingDetails['pickup_date'] }} at {{ $bookingDetails['pickup_time'] }}</p>
 
-    <p><strong>Passenger(s):</strong> {{ $bookingDetails['press'] }}</p>
-    <p><strong>Luggage:</strong> {{ $bookingDetails['luggage'] }}</p>
+
+    @if (preg_match('/^Pax *$/', $bookingDetails['press']))
+        <p><strong>Passenger(s):</strong> </p>
+    @else
+        <p><strong>Passenger(s):</strong> {{ $bookingDetails['press'] }}</p>
+    @endif
+    @if (preg_match('/^Luggage *$/', $bookingDetails['luggage']))
+        <p><strong>Luggage:</strong></p>
+    @else
+        <p><strong>Luggage:</strong> {{ $bookingDetails['luggage'] }}</p>
+    @endif
     <p><strong>Vehicle:</strong> {{ $bookingDetails['vehicle'] }}</p>
     @if (preg_match('/^House no *$/', $bookingDetails['house_no_from']))
         <p><strong>From:</strong> {{ $bookingDetails['pickup_address'] }}</p>
