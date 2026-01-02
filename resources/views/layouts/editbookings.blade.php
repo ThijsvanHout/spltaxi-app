@@ -187,7 +187,7 @@
                         $selectedDriverId = $chauffeur ?? null;
                     @endphp
                     <select class="" id="driver" name="driver_id">
-                        <option value="" class="">Choose a driver</option>
+                        <option value="0" class="">No driver</option>
                         @foreach ($drivers as $driver)
                             <option value="{{ $driver->id }}"
                                 {{ $selectedDriverId == $driver->id ? 'selected' : '' }}>{{ $driver->name }}</option>

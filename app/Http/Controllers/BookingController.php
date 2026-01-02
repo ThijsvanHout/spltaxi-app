@@ -1267,7 +1267,16 @@ $bookings = Booking::select('bookings.*',
 			}			
 		} */
 
-		if ($request->filled('driver_id')) {
+		$driverId = (int)$request->driver_id;
+		if ($driverId === 0) {
+			DB::table('driver_booking')
+				->where('id', $booking->assign_id)
+				->delete();
+
+			$booking->status = 'Pending';
+			$booking->assign_id = null;
+			$booking->save();
+		} else {
 
 			DB::transaction(function () use ($request, $booking) {
 
