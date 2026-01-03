@@ -165,7 +165,7 @@
                         <option value="Sedan" @if ($booking->vehicle === 'Sedan') selected @endif>Sedan</option>
                         <option value="Stationwagen" @if ($booking->vehicle === 'Stationwagen') selected @endif>Stationwagen
                         </option>
-                        <option value="Bus4" @if ($booking->vehicle === 'Bus4') selected @endif>>Bus4</option>
+                        <option value="Bus4" @if ($booking->vehicle === 'Bus4') selected @endif>Bus4</option>
                         <option value="Bus5" @if ($booking->vehicle === 'Bus5') selected @endif>Bus5</option>
                         <option value="Bus6" @if ($booking->vehicle === 'Bus6') selected @endif>Bus6</option>
                         <option value="Bus7" @if ($booking->vehicle === 'Bus7') selected @endif>Bus7</option>
