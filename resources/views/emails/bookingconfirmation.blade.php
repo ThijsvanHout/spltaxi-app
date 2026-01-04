@@ -37,11 +37,9 @@
     @endif
     <p><strong>Price:</strong>
         Customer:
-        @if (preg_match('/^€ *$/', $bookingDetails['price']))
-            N/A
-        @else
-            {{ $bookingDetails['price'] }}
-        @endif
+
+        {{ $bookingDetails['price'] }}
+
     </p>
 
     <p><strong>Payment Mode:</strong> {{ $bookingDetails['mode'] }}</p>

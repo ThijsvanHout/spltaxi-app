@@ -300,32 +300,38 @@ $bookings = Booking::select('bookings.*',
 				$bookings->press = $request['press'];
 				$bookings->luggage = $request['luggage'];
 				$bookings->vehicle = $request['vehicle'];
-				$bookings->price = $request['price'] ?? '';
+				$bookings->price = $request['price'] ?? '€';
+				$price = "";
 				if (str_contains(strtolower($bookings->pickup_address), 'schiphol') || str_contains(strtolower($bookings->destination), 'schiphol')) {
 					if (str_contains(strtolower($bookings->pickup_address), 'schiphol')) {
 						// Opsplitsen op komma
 						$delen = explode(',', $bookings->destination);
 
-						// Plaats is het tweede element (index 1)
-						$plaats = trim($delen[1]); // Opsplitsen op komma
+						if (count($delen) > 1) {
+							// Plaats is het tweede element (index 1)
+							$plaats = trim($delen[1]); // Opsplitsen op komma
 
-						if (str_contains($plaats, 'Ouderkerk')) {
-							$plaats = 'Ouderkerk';
+							if (str_contains($plaats, 'Ouderkerk')) {
+								$plaats = 'Ouderkerk';
+							}
+
+							$price = Prices_per_city::whereRaw('LOWER(plaats) = ?', [strtolower($plaats)])->first();
 						}
-
-						$price = Prices_per_city::whereRaw('LOWER(plaats) = ?', [strtolower($plaats)])->first();
 					} else {
 						// Opsplitsen op komma
 						$delen = explode(',', $bookings->pickup_address);
 
-						// Plaats is het tweede element (index 1)
-						$plaats = trim($delen[1]); // Opsplitsen op komma
+						if (count($delen) > 1) {
+							// Plaats is het tweede element (index 1)
+							$plaats = trim($delen[1]); // Opsplitsen op komma
 
-						if (str_contains($plaats, 'Ouderkerk')) {
-							$plaats = 'Ouderkerk';
+
+							if (str_contains($plaats, 'Ouderkerk')) {
+								$plaats = 'Ouderkerk';
+							}
+
+							$price = Prices_per_city::whereRaw('LOWER(plaats) = ?', [strtolower($plaats)])->first();
 						}
-
-						$price = Prices_per_city::whereRaw('LOWER(plaats) = ?', [strtolower($plaats)])->first();
 					}
 
 					if ($price) {
@@ -401,10 +407,16 @@ $bookings = Booking::select('bookings.*',
 
 				/*$bookingDetails = $request->all();*/
 				$bookingDetails = $request->except(['price1']);
-				if ($bookings->price) {
-					$bookingDetails['price'] = $bookings->price;
+
+				$price = trim($bookings['price']);
+
+				if ($price === '€' || $price === '') {
+					$bookingDetails['price'] = 'N/A';
+				} else {
+					$bookingDetails['price'] = $price;
 				}
-				Mail::to($request->input('email'))->cc('info@spl.taxi')->send(new BookingConfirmation($bookingDetails));
+
+				Mail::to($request->input('email'))->cc('blackhout@upcmail.nl')->send(new BookingConfirmation($bookingDetails));
 				//Session::flash('success', 'Booking created successfully!');
 
 				$referer = $request->headers->get('referer');
