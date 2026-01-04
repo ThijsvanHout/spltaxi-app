@@ -416,7 +416,7 @@ $bookings = Booking::select('bookings.*',
 					$bookingDetails['price'] = $price;
 				}
 
-				Mail::to($request->input('email'))->cc('blackhout@upcmail.nl')->send(new BookingConfirmation($bookingDetails));
+				Mail::to($request->input('email'))->cc('info@spl.taxi')->send(new BookingConfirmation($bookingDetails));
 				//Session::flash('success', 'Booking created successfully!');
 
 				$referer = $request->headers->get('referer');
