@@ -28,26 +28,48 @@ class DriverBookingController extends Controller
      */
     public function create(Request $request)
     {
-        
-        $driverBooking = DriverBooking::create([
-            'driver_id' => $request->driver_id,
-            'booking_id' => $request->booking_id,
-            'status' => 'Pending'
-        ]);
-        if (isset($driverBooking)) {
-            // Retrieve the booking and update its status and driver_id
-            $booking = Booking::findOrFail($request->booking_id);
-            $booking->status = 'Assigned';
-            $booking->assign_id = $driverBooking->id;
-            $booking->save();
-            Session::flash('success', 'Driver assigned successfully');
+        $booking = Booking::findOrFail($request->booking_id);
 
-            return response()->json(['message' => 'Driver assigned successfully'], 200);
+        if ((int)$request->driver_id === 0) {
+
+            if ($booking->assign_id !== null) {
+                DB::table('driver_booking')
+                    ->where('id', $booking->assign_id)
+                    ->delete();
+
+                $booking->status = 'pending';
+                $booking->assign_id = null;
+                $booking->save();
+            }
+
+            return response()->json(['message' => 'Driver removed'], 200);
         } else {
-            Session::flash('success', 'Driver assignment failed');
-            return response()->json(['message' => 'Driver assignment failed'], 500);
+            if ($booking->status === 'Assigned') {
+                $driverBooking = DriverBooking::where('id', $booking->assign_id)->first();
+                $driverBooking->driver_id = (int) $request->driver_id;
+                $driverBooking->save();
+                return response()->json(['message' => 'Driver assigned successfully'], 200);
+            } else {
+                $driverBooking = DriverBooking::create([
+                    'driver_id' => $request->driver_id,
+                    'booking_id' => $request->booking_id,
+                    'status' => 'Pending'
+                ]);
+                if (isset($driverBooking)) {
+                    // Retrieve the booking and update its status and driver_id
+                    $booking = Booking::findOrFail($request->booking_id);
+                    $booking->status = 'Assigned';
+                    $booking->assign_id = $driverBooking->id;
+                    $booking->save();
+                    Session::flash('success', 'Driver assigned successfully');
+
+                    return response()->json(['message' => 'Driver assigned successfully'], 200);
+                } else {
+                    Session::flash('success', 'Driver assignment failed');
+                    return response()->json(['message' => 'Driver assignment failed'], 500);
+                }
+            }
         }
-        
     }
 
     /**
@@ -70,9 +92,9 @@ class DriverBookingController extends Controller
     public function show($id)
     {
         $booking = DB::table('bookings')
-        ->where('bookings.assign_id', '=', $id)
-        ->select('*')
-        ->first();
+            ->where('bookings.assign_id', '=', $id)
+            ->select('*')
+            ->first();
         return view('frontend.driverconfirmation', compact('booking'));
     }
 
@@ -85,55 +107,55 @@ class DriverBookingController extends Controller
     public function showUserConfirmation($id)
     {
         $booking = DB::table('driver_booking')
-        ->where('driver_booking.id', '=', $id)
-        ->leftJoin('drivers','driver_booking.driver_id','=','drivers.id')
-        ->leftJoin('bookings','driver_booking.id','=','bookings.assign_id')
-        ->select('drivers.name as driver_name','drivers.email as driver_email','drivers.car_number','drivers.phone as driver_phone','bookings.*')
-        ->first();
+            ->where('driver_booking.id', '=', $id)
+            ->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+            ->leftJoin('bookings', 'driver_booking.id', '=', 'bookings.assign_id')
+            ->select('drivers.name as driver_name', 'drivers.email as driver_email', 'drivers.car_number', 'drivers.phone as driver_phone', 'bookings.*')
+            ->first();
         return view('frontend.userconfirmation', compact('booking'));
     }
 
-	public function showUserReceipt($id)
+    public function showUserReceipt($id)
     {
         $booking = DB::table('driver_booking')
-        ->where('driver_booking.id', '=', $id)
-        ->leftJoin('drivers','driver_booking.driver_id','=','drivers.id')
-        ->leftJoin('bookings','driver_booking.id','=','bookings.assign_id')
-        ->select('drivers.name as driver_name','drivers.email as driver_email','drivers.car_number','drivers.phone as driver_phone','bookings.*')
-        ->first();
+            ->where('driver_booking.id', '=', $id)
+            ->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+            ->leftJoin('bookings', 'driver_booking.id', '=', 'bookings.assign_id')
+            ->select('drivers.name as driver_name', 'drivers.email as driver_email', 'drivers.car_number', 'drivers.phone as driver_phone', 'bookings.*')
+            ->first();
         return view('frontend.userreceipt', compact('booking'));
     }
-	
-	public function userReceiptEdit($id)
-    {
-        $booking = DB::table('driver_booking')
-        ->where('driver_booking.id', '=', $id)
-        ->leftJoin('drivers','driver_booking.driver_id','=','drivers.id')
-        ->leftJoin('bookings','driver_booking.id','=','bookings.assign_id')
-        ->select('drivers.name as driver_name','drivers.email as driver_email','drivers.car_number','drivers.phone as driver_phone','bookings.*')
-        ->first();
-		
-		return view('layouts.userreceiptedit', compact('booking'));
-    }
-    
-	public function userReceiptEmail($id)
-    {
-        $booking = DB::table('driver_booking')
-        ->where('driver_booking.id', '=', $id)
-        ->leftJoin('drivers','driver_booking.driver_id','=','drivers.id')
-        ->leftJoin('bookings','driver_booking.id','=','bookings.assign_id')
-        ->select('drivers.name as driver_name','drivers.email as driver_email','drivers.car_number','drivers.phone as driver_phone','bookings.*')
-        ->first();
-		
-		Mail::send('layouts.userreceiptemail', ['booking' => $booking], function($message) use ($booking) {
-			$message->to('blackhout@upcmail.nl')
-					->subject('Bevestiging van je boeking');
-		});
 
-		return redirect('/admin/bookings')
-        ->with('success', 'Bevestiging is verzonden!');  //redirect naar url /admin/bookings
+    public function userReceiptEdit($id)
+    {
+        $booking = DB::table('driver_booking')
+            ->where('driver_booking.id', '=', $id)
+            ->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+            ->leftJoin('bookings', 'driver_booking.id', '=', 'bookings.assign_id')
+            ->select('drivers.name as driver_name', 'drivers.email as driver_email', 'drivers.car_number', 'drivers.phone as driver_phone', 'bookings.*')
+            ->first();
+
+        return view('layouts.userreceiptedit', compact('booking'));
     }
-	
+
+    public function userReceiptEmail($id)
+    {
+        $booking = DB::table('driver_booking')
+            ->where('driver_booking.id', '=', $id)
+            ->leftJoin('drivers', 'driver_booking.driver_id', '=', 'drivers.id')
+            ->leftJoin('bookings', 'driver_booking.id', '=', 'bookings.assign_id')
+            ->select('drivers.name as driver_name', 'drivers.email as driver_email', 'drivers.car_number', 'drivers.phone as driver_phone', 'bookings.*')
+            ->first();
+
+        Mail::send('layouts.userreceiptemail', ['booking' => $booking], function ($message) use ($booking) {
+            $message->to('blackhout@upcmail.nl')
+                ->subject('Bevestiging van je boeking');
+        });
+
+        return redirect('/admin/bookings')
+            ->with('success', 'Bevestiging is verzonden!');  //redirect naar url /admin/bookings
+    }
+
     public function edit($id)
     {
         //
@@ -166,7 +188,7 @@ class DriverBookingController extends Controller
     {
         $booking = Booking::where('assign_id', $id)->firstOrFail();
         $status = $request->input('status');
-        
+
         if ($status == 'accepted') {
             $booking->status = 'Accepted';
             $message = 'Booking Accepted Successfully!';
@@ -183,6 +205,4 @@ class DriverBookingController extends Controller
         // return back to the same page
         return back();
     }
-
-
 }

@@ -43,8 +43,8 @@ Route::middleware(['admin'])->group(function () {
     Route::resource('admin/bookings', 'App\Http\Controllers\BookingController');
     Route::resource('admin/drivers', 'App\Http\Controllers\DriverController');
     Route::get('/admin/completed-bookings', [BookingController::class, 'completedBookings'])->name('completedbookings');
-	Route::post('/admin/completed-bookings/filter', [BookingController::class, 'filter'])->name('bookings-filter');
-	Route::post('/admin/completed-bookings/filterPeriod', [BookingController::class, 'filterPeriod'])->name('bookings-filterPeriod');
+    Route::post('/admin/completed-bookings/filter', [BookingController::class, 'filter'])->name('bookings-filter');
+    Route::post('/admin/completed-bookings/filterPeriod', [BookingController::class, 'filterPeriod'])->name('bookings-filterPeriod');
     Route::post('admin/booking-status', [BookingController::class, 'bookingStatus'])->name('admin/bookingStatus');
     /*
     Route::get('/admin/bookings/add', function(){
@@ -58,29 +58,29 @@ Route::middleware(['admin'])->group(function () {
         return view('layouts/deletebookings');
     });
     */
-	
-	Route::delete('/admin/bookings/{id}', 'BookingController@destroy')->name('bookings.destroy');
 
-	Route::get('admin/bookings/{id}/copy2', [BookingController::class, 'copy2'])->name('copy2');
-	Route::get('admin/bookings/{id}/retFlight', [BookingController::class, 'retFlight'])->name('retFlight');
-	Route::get('admin/bookings/completed-bookings/onaccountComp', [BookingController::class, 'onaccountCompleted'])->name('onaccountcompbookings');
-	Route::get('admin/bookings/bookings/onaccount', [BookingController::class, 'onaccountNew'])->name('onaccountnewbookings');
-	
-	// Drivers	
+    Route::delete('/admin/bookings/{id}', 'BookingController@destroy')->name('bookings.destroy');
+    Route::post('/admin/cancel/booking/{id}', [BookingController::class, 'cancelBooking'])->name('cancel-booking');
+    Route::get('admin/bookings/{id}/copy2', [BookingController::class, 'copy2'])->name('copy2');
+    Route::get('admin/bookings/{id}/retFlight', [BookingController::class, 'retFlight'])->name('retFlight');
+    Route::get('admin/bookings/completed-bookings/onaccountComp', [BookingController::class, 'onaccountCompleted'])->name('onaccountcompbookings');
+    Route::get('admin/bookings/bookings/onaccount', [BookingController::class, 'onaccountNew'])->name('onaccountnewbookings');
 
-	Route::get('/admin/drivers', [DriverController::class, 'index'])->name('admin.drivers');
+    // Drivers	
+
+    Route::get('/admin/drivers', [DriverController::class, 'index'])->name('admin.drivers');
     Route::get('/admin/drivers/add', function () {
         return view('layouts/adddrivers');
     });
     Route::post('/admin/drivers', [DriverController::class, 'store'])->name('drivers.store');
-	Route::post('/admin/drivers/update-order', [DriverController::class, 'updateOrder'])->name('drivers.update-order');
-    
+    Route::post('/admin/drivers/update-order', [DriverController::class, 'updateOrder'])->name('drivers.update-order');
+
     Route::get('/admin/drivers/delete', function () {
         return view('layouts/deletedrivers');
     });
     Route::post('admin/assign-driver', [DriverBookingController::class, 'create'])->name('admin/assign-driver');
-	
-	// Companies	
+
+    // Companies	
     Route::get('/admin/companies', [BookingController::class, 'showCompanies'])->name('admin.companies');
     Route::get('/admin/companies/add', function () {
         return view('layouts/addcompanies');
@@ -89,32 +89,32 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/admin/companies/delete', function () {
         return view('layouts/deletecompanies');
     });
-	Route::get('admin/companies/{id}/edit', [BookingController::class, 'editCompany']);
-	
-	//whatsapp edit
-	Route::get('admin/whatsapp/{id}/edit', [BookingController::class, 'editWhatsapp']);
+    Route::get('admin/companies/{id}/edit', [BookingController::class, 'editCompany']);
 
-	// Admin users	
+    //whatsapp edit
+    Route::get('admin/whatsapp/{id}/edit', [BookingController::class, 'editWhatsapp']);
+
+    // Admin users	
     Route::get('/admin/admins', [AdminController::class, 'showAdmins'])->name('admin.admins');
-	Route::get('/admin/admins/add', function () {
+    Route::get('/admin/admins/add', function () {
         return view('admin/addadmins');
     });
     Route::post('/admin/admins', [AdminController::class, 'storeAdmin'])->name('admins.store');
-   /* Route::get('/admin/admins/delete', function () {
+    /* Route::get('/admin/admins/delete', function () {
         return view('layouts/deletecadmins
     });*/
-	Route::get('admin/admins/{id}/edit', [AdminController::class, 'editAdmin']);
-	
-	// Factuur
-	Route::get('/admin/invoice', [BookingController::class, 'invoice'])->name('admin.invoice');
-	Route::get('/admin/createinvoicecompany', [BookingController::class, 'createInvoicecompany'])->name('admin.createinvoicecompany');
-	Route::get('/admin/createinvoiceclient', [BookingController::class, 'createInvoiceClient'])->name('admin.createInvoiceClient');
-	Route::post('/admin/showinvoice', [BookingController::class, 'showinvoice'])->name('admin.showinvoice');
-	Route::post('/admin/invoicecompany', [BookingController::class, 'invoicecompany'])->name('admin.invoicecompany');
-	Route::post('/admin/invoiceclient', [BookingController::class, 'invoiceClient'])->name('admin.invoiceClient');
-	Route::get('admin/invoice/{id}/edit', [BookingController::class, 'editInvoice'])->name('admin.editinvoice');
+    Route::get('admin/admins/{id}/edit', [AdminController::class, 'editAdmin']);
+
+    // Factuur
+    Route::get('/admin/invoice', [BookingController::class, 'invoice'])->name('admin.invoice');
+    Route::get('/admin/createinvoicecompany', [BookingController::class, 'createInvoicecompany'])->name('admin.createinvoicecompany');
+    Route::get('/admin/createinvoiceclient', [BookingController::class, 'createInvoiceClient'])->name('admin.createInvoiceClient');
+    Route::post('/admin/showinvoice', [BookingController::class, 'showinvoice'])->name('admin.showinvoice');
+    Route::post('/admin/invoicecompany', [BookingController::class, 'invoicecompany'])->name('admin.invoicecompany');
+    Route::post('/admin/invoiceclient', [BookingController::class, 'invoiceClient'])->name('admin.invoiceClient');
+    Route::get('admin/invoice/{id}/edit', [BookingController::class, 'editInvoice'])->name('admin.editinvoice');
 });
-	
+
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login']);
 Route::get('/admin/{id}/password', [AdminController::class, 'passwordForm'])->name('admin.passwordForm');
@@ -156,10 +156,10 @@ Route::post('/admins/update', [AdminController::class, 'updateAdmin'])->name('ad
 
 
 Route::get('/send-whatsapp/{to}/{message}', [BookingController::class, 'sendWhatsAppMessage'])->name('send.whatsapp');
-Route::get('/whatsapp/send', function() {
+Route::get('/whatsapp/send', function () {
     $phone = request('phone');
     $message = request('message');
-	
+
     // Verwijder alles behalve cijfers in telefoonnummer
     $phone = preg_replace('/\D/', '', $phone);
 
@@ -168,7 +168,6 @@ Route::get('/whatsapp/send', function() {
 
     // Redirect direct naar WhatsApp
     return redirect($whatsapp_url);
-	
 })->name('whatsapp.send');
 
 
@@ -192,6 +191,3 @@ Route::post('/whatsapp/webhook', [BookingController::class, 'whatsappReceive']);
 
 //ophalen mail berichten doorgestuurd vanaf whats app
 Route::get('/fetch-mails', [BookingController::class, 'fetchOutlookMails']);
-
-
-

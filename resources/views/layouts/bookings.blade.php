@@ -389,8 +389,8 @@
                             <i class="bi bi-house-door-fill"></i>
                         </a>
                         <!--<a  href="{{ url('/admin/bookings/create') }}"  style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;" >
-                                   <i class="bi bi-plus-lg" ></i>
-                                  </a>-->
+                                                                                                               <i class="bi bi-plus-lg" ></i>
+                                                                                                              </a>-->
                         <a href="" id="add-booking"
                             style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;">
                             <i class="bi bi-plus-lg"></i>
@@ -471,18 +471,21 @@
 
 
                                                     <!-- <a href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-                                          Return Booking
-                                         </a> -->
+                                                                                                                      Return Booking
+                                                                                                                     </a> -->
+                                                    <a href="#" class="cancel-booking"
+                                                        data-booking-id="{{ $booking->id }}">Cancel</a>
+
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="return-booking">Return Booking</a>
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="copy-booking">Copy</a>
                                                     <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}">
-                                          Copy</a>-->
+                                                                                                                      Copy</a>-->
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="edit-booking">Edit</a>
                                                     <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                                          >Edit</a>-->
+                                                                                                                      >Edit</a>-->
                                                     <div class="user-receipt-dropdown">
                                                         <button type="button"
                                                             class="no-border-btn btn-block bg-gradient-primary"
@@ -506,13 +509,13 @@
                                                         </div>
                                                     </div>
                                                     <!--	<form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                                          @csrf
-                                          @method('DELETE')
-                                          <a href="" type="submit"
-                                           onclick="return confirm('Are you sure you want to delete this record?')">
-                                           Delete
-                                          </a>
-                                         </form>  -->
+                                                                                                                      @csrf
+                                                                                                                      @method('DELETE')
+                                                                                                                      <a href="" type="submit"
+                                                                                                                       onclick="return confirm('Are you sure you want to delete this record?')">
+                                                                                                                       Delete
+                                                                                                                      </a>
+                                                                                                                     </form>  -->
                                                 @endif
                                                 @if ($booking->status != 'pending')
                                                     @php
@@ -840,6 +843,7 @@
                         <div class="form-group">
                             <label for="driver">Driver</label>
                             <select class="" id="driver" name="driver_id">
+                                <option value="0" class="">No driver</option>
                                 @foreach ($drivers as $driver)
                                     <option value="{{ $driver->id }}">{{ $driver->name }}</option>
                                 @endforeach
@@ -995,6 +999,35 @@
 
         });
 
+        $(".cancel-booking").click(function(event) {
+            event.preventDefault();
+
+            // Scrollpositie opslaan in localStorage
+            localStorage.setItem('scrollBookings', window.scrollY);
+            localStorage.setItem('activeCompleted', 'Active');
+
+            const id = $(this).data("booking-id");
+
+            fetch(`/admin/cancel/booking/${id}?tab=active`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Cancel failed');
+                    }
+                    // eventueel refresh / UI update
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Cancel failed');
+                });
+        });
+
         $(".return-booking").click(function(event) {
             event.preventDefault();
 
@@ -1138,15 +1171,15 @@
             };
             var inputs = document.getElementsByClassName('pg-autocomplete');
             /*	inputs.forEach(function(input) {
-            		if (!input.autocompleteInstance) { // alleen als er nog geen instance is
-            			input.autocompleteInstance = new google.maps.places.Autocomplete(input, options);
+                    if (!input.autocompleteInstance) { // alleen als er nog geen instance is
+                        input.autocompleteInstance = new google.maps.places.Autocomplete(input, options);
 
-            			input.autocompleteInstance.addListener("place_changed", function() {
-            				var place = this.getPlace();
-            				alert("Gekozen adres: " + place.formatted_address);
-            			});
-            		}
-            	}); */
+                        input.autocompleteInstance.addListener("place_changed", function() {
+                            var place = this.getPlace();
+                            alert("Gekozen adres: " + place.formatted_address);
+                        });
+                    }
+                }); */
             for (var i = 0; i < inputs.length; i++) {
                 new google.maps.places.Autocomplete(inputs[i], options);
             }
@@ -1203,7 +1236,7 @@
 
 
         /*    function showPosition(position) {
-        			//console.log("showPosition called with position:", position); // Debug
+                    //console.log("showPosition called with position:", position); // Debug
                     var lat = position.coords.latitude;
                     var lng = position.coords.longitude;
                     var geocoder = new google.maps.Geocoder();
@@ -1211,31 +1244,31 @@
                     geocoder.geocode({
                         'latLng': latLng
                     }, function(results, status) {
-        				console.log("Geocode results:", results, "Status:", status); // Debug
+                        console.log("Geocode results:", results, "Status:", status); // Debug
                         if (status === google.maps.GeocoderStatus.OK) {
-        					
+                            
                             if (results[0]) {
-        						console.log("Result found:", results[0]); // Debug
+                                console.log("Result found:", results[0]); // Debug
                                 //document.getElementsByClassName('pg-autocomplete')[0].value = results[0].formatted_address;
-        						var input = document.getElementsByClassName('pg-autocomplete')[0];
+                                var input = document.getElementsByClassName('pg-autocomplete')[0];
                         input.value = results[0].formatted_address;
 
-        						
-        						  // Check if the address contains "Schiphol"
-        						  if (results[0].formatted_address.includes('Schiphol')) {
-        							  alert("Schiphol");
-        							document.getElementById('house-to').style.display = 'none';
-        						  } else {
-        							  alert("geen schiphol");
-        							document.getElementById('house-to').style.display = 'block';
-        						  }
-        						
-        						// Manueel de change event triggeren
-        						// Manueel de change event triggeren
+                                
+                                    // Check if the address contains "Schiphol"
+                                    if (results[0].formatted_address.includes('Schiphol')) {
+                                        alert("Schiphol");
+                                    document.getElementById('house-to').style.display = 'none';
+                                    } else {
+                                        alert("geen schiphol");
+                                    document.getElementById('house-to').style.display = 'block';
+                                    }
+                                
+                                // Manueel de change event triggeren
+                                // Manueel de change event triggeren
                         var event = new Event('change');
                         input.dispatchEvent(event);
                             }
-        					else alert("geen results[0]");
+                            else alert("geen results[0]");
                         }
                     });
                 } */
@@ -1314,7 +1347,8 @@
                     // Close the modal
                     var modal = document.getElementById('myModal');
                     modal.style.display = 'none';
-                    if (response.message === 'Driver assigned successfully') {
+                    if (response.message === 'Driver assigned successfully' ||
+                        response.message === 'Driver removed') {
                         window.location.reload();
                     }
                     // Show a success message or refresh the page

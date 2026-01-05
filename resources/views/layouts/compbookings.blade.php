@@ -425,8 +425,8 @@
                             <i class="bi bi-house-door-fill"></i>
                         </a>
                         <!--<a  href="{{ url('/admin/bookings/create') }}"  style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;" >
-           <i class="bi bi-plus-lg" ></i>
-          </a>-->
+               <i class="bi bi-plus-lg" ></i>
+              </a>-->
                         <a href="" id="add-booking"
                             style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;">
                             <i class="bi bi-plus-lg"></i>
@@ -438,17 +438,17 @@
                 <a href="{{ route('completedbookings') }}"><button class="btn-grad">Older Bookings</button></a>
 
                 <!--<form action="{{ route('bookings-filter') }}" method="POST" id="filterForm">
-         @csrf
-         <select name="chauffeur" id="chauffeur" class="dropbtn">
-          <option value="" class="dropdown-content" >Choose a driver</option>
-          @foreach ($drivers as $driver)
+             @csrf
+             <select name="chauffeur" id="chauffeur" class="dropbtn">
+              <option value="" class="dropdown-content" >Choose a driver</option>
+              @foreach ($drivers as $driver)
     <option value="{{ $driver->id }}">{{ $driver->name }}</option>
     @endforeach
-         </select>
-        </form>
-        
+             </select>
+            </form>
+            
 
-        <a href="{{ route('onaccountcompbookings') }}"><button class="btn-grad">On Account</button></a>-->
+            <a href="{{ route('onaccountcompbookings') }}"><button class="btn-grad">On Account</button></a>-->
                 <form action="{{ route('bookings-filterPeriod') }}" method="POST" id="filterPeriodForm">
                     @csrf
                     <table class="booktable" border="1">
@@ -615,20 +615,21 @@
                                                     Complete
                                                 </button>
 
-
+                                                <a href="#" class="cancel-booking"
+                                                    data-booking-id="{{ $booking->id }}">Cancel</a>
                                                 <!-- <a href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-                 Return Booking
-                </a> -->
+                     Return Booking
+                    </a> -->
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="return-booking">Return Booking</a>
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="copy-booking">Copy</a>
                                                 <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}">
-                 Copy</a>-->
+                     Copy</a>-->
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="edit-booking">Edit</a>
                                                 <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                >Edit</a>	-->
+                    >Edit</a>	-->
                                                 <div class="user-receipt-dropdown">
                                                     <button type="button"
                                                         class="no-border-btn btn-block bg-gradient-primary"
@@ -651,13 +652,13 @@
                                                     </div>
                                                 </div>
                                                 <!-- <form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                 @csrf
-                 @method('DELETE')
-                 <a href="" type="submit"
-                 onclick="return confirm('Are you sure you want to delete this record?')">
-                 Delete
-                 </a>
-                 </form> -->
+                     @csrf
+                     @method('DELETE')
+                     <a href="" type="submit"
+                     onclick="return confirm('Are you sure you want to delete this record?')">
+                     Delete
+                     </a>
+                     </form> -->
                                                 @php
                                                     $phone = '31' . ltrim($booking->driver_phone, '0');
                                                     $message =
@@ -1217,6 +1218,36 @@
 
         });
 
+        $(".cancel-booking").click(function(event) {
+            event.preventDefault();
+
+            // Scrollpositie opslaan in localStorage
+            localStorage.setItem('scrollBookings', window.scrollY);
+            localStorage.setItem('activeCompleted', 'Active');
+
+            const id = $(this).data("booking-id");
+
+            fetch(`/admin/cancel/booking/${id}?tab=active`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Cancel failed');
+                    }
+                    // eventueel refresh / UI update
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Cancel failed');
+                });
+        });
+
+
         $(".return-booking").click(function(event) {
             event.preventDefault();
             //var url = $(this).attr('href');
@@ -1460,7 +1491,7 @@
                         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                         xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector(
                             'meta[name="csrf-token"]').getAttribute(
-                        'content')); // Assuming you have a meta tag for csrf-token
+                            'content')); // Assuming you have a meta tag for csrf-token
 
                         xhr.onload = function() {
                             if (this.status === 200) {

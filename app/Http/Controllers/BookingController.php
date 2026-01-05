@@ -445,6 +445,22 @@ $bookings = Booking::select('bookings.*',
 		/*return redirect ("https://www.spl.taxi");*/
 	}
 
+	public function cancelBooking(Request $request, $id)
+	{
+		$booking = Booking::findOrFail($id);
+		$booking->status = "Cancelled";
+		$booking->save();
+
+		$tab = $request->query('tab');  // 'active' of 'completed'
+
+		if ($tab === 'completed') {
+			return redirect()->route('completed-bookings.index');
+		}
+
+
+		return redirect()->route('bookings.index');
+	}
+
 	public function edit(Booking $booking)
 	{
 		//$drivers = Driver::all();
@@ -1285,7 +1301,7 @@ $bookings = Booking::select('bookings.*',
 				->where('id', $booking->assign_id)
 				->delete();
 
-			$booking->status = 'Pending';
+			$booking->status = 'pending';
 			$booking->assign_id = null;
 			$booking->save();
 		} else {
