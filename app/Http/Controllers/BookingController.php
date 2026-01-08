@@ -98,7 +98,11 @@ $bookings = Booking::select('bookings.*',
 	}
 	public function create()
 	{
-		return view('layouts.addbookings');
+		$drivers = Driver::orderBy('order', 'asc')->get();
+
+		$companies = Company::all();
+
+		return view('layouts.addbookings', ['drivers' => $drivers, 'companies' => $companies]);
 	}
 
 	public function adminstore(Request $request)

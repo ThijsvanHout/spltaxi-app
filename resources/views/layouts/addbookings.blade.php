@@ -20,10 +20,10 @@
     }
 </style>
 
+
 <div class="container table-responsive">
     <form id="add-booking-form" action="{{ route('bookings.adminstore') }}" method="POST">
         @csrf
-        <!--<input type="hidden" id="id" name="id" value="{{ $booking->id }}">-->
         <table class="table table-responsive-lg table-bordered" border="1">
             <colgroup>
                 <col style="width:30%">
@@ -426,17 +426,17 @@
 
             // Voeg een eventlistener toe aan het inputveld
             /*$('#to').on('input', function(){
-            // Haal de ingevoerde waarde op
-            var ingevoerdeWaarde = $(this).val();
-			console.log(ingevoerdeWaarde);
-            // Controleer of de ingevoerde waarde "Schiphol" bevat
-            if (ingevoerdeWaarde.toLowerCase().indexOf('schiphol') !== -1) {
-                $("#house_to").hide();
-            } else {				
-				$("#house_to").show();
-                // Voer hier verdere acties uit als de waarde "Schiphol" niet bevat
-            }
-        });*/
+                    // Haal de ingevoerde waarde op
+                    var ingevoerdeWaarde = $(this).val();
+        			console.log(ingevoerdeWaarde);
+                    // Controleer of de ingevoerde waarde "Schiphol" bevat
+                    if (ingevoerdeWaarde.toLowerCase().indexOf('schiphol') !== -1) {
+                        $("#house_to").hide();
+                    } else {				
+        				$("#house_to").show();
+                        // Voer hier verdere acties uit als de waarde "Schiphol" niet bevat
+                    }
+                });*/
 
 
             var adresTo = document.getElementById('to');
