@@ -88,6 +88,10 @@
                 <td>{{ $booking->name }}</td>
             </tr>
             <tr>
+                <th>Date time</th>
+                <td>{{ $booking->pickup_date }} {{ $booking->pickup_time }}</td>
+            </tr>
+            <tr>
                 <th>From</th>
                 <td>{{ $booking->pickup_address }} {{ $booking->house_no_from }}</td>
             </tr>
