@@ -377,18 +377,27 @@ $bookings = Booking::select('bookings.*',
 
 
 				if ($request['return'] === 'Yes') {
+					$bookings->date_return_flight = $request['flight_date'];
+					$bookings->time_return_flight = $request['flight_time'];
+					$bookings->flight_no_on_return = $request['flight_no_on_return'];
 					$returnbookings = new Booking();
 					$returnbookings->name = $request['uname'];
 					$returnbookings->email = $request['email'];
 					$returnbookings->phone = $request['mobile'];
 					$returnbookings->company = $request['company'];
 					$returnbookings->pickup_address = $request['to'];
-					$returnbookings->house_no_from = $request['house_no_to'];
+					if (strpos(strtolower($request['to']), 'schiphol') !== false) {
+						$returnbookings->house_no_from = $request['flight_no_on_return'];
+					} else {
+						$returnbookings->house_no_from = $request['house_no_to'];
+					}
 					$returnbookings->destination = $request['pickup_address'];
 					$returnbookings->house_no_to = $request['house_no_from'];
 					$returnbookings->pickup_date = $request['flight_date'];
 					$returnbookings->pickup_time = $request['flight_time'];
-					$returnbookings->flight_no_on_return = $request['flight_no'];
+					if ($request['flight_no_on_return']) {
+						$returnbookings->flight_no_on_return = $request['flight_no_on_return'];
+					}
 					$returnbookings->press = $request['press'];
 					$returnbookings->luggage = $request['luggage'];
 					$returnbookings->vehicle = $request['vehicle'];
@@ -1258,9 +1267,38 @@ $bookings = Booking::select('bookings.*',
 		$booking->company = $request->input('company');
 		$booking->remark = $request->input('remark');
 		$booking->press = $request->input('from1');
-		$booking->house_no_from = $request->input('house_no_from');
+		$booking->pickup_date = $request->input('pickup_date');
+		$booking->pickup_time = $request->input('pickup_time');
+		$booking->pickup_address = $request->input('pickup_address');
+		if (strpos(strtolower($request['pickup_address']), 'schiphol') !== false) {
+			// Als er Flight staat met alleen spaties, dan House_no_from gebruiken
+			if (preg_match('/^Flight *$/', $request['flight_no'])) {
+				$booking->house_no_from = $request['house_no_from'];
+			} else {
+				// er is Flight met een vluchtnummer ingevuld
+				$booking->house_no_from = $request['flight_no'];
+			}
+		} else {
+			$booking->house_no_from = $request['house_no_from'];
+		}
+
+
 		$booking->destination = $request->input('to');
-		$booking->house_no_to = $request->input('house_no_to');
+		if (strpos(strtolower($request['to']), 'schiphol') !== false) {
+			// Als Als er Flight staat met alleen spaties, dan House_no_from gebruiken
+			if (preg_match('/^Flight *$/', $request['flight_no_to'])) {
+				if (preg_match('/^House no *$/', $request['house_no_to'])) {
+					// als er House no staat met alleen spaties, niks invullen
+					$booking->house_no_to = "";
+				} else {
+					$booking->house_no_to = $request['house_no_to'];
+				}
+			} else {
+				$booking->house_no_to = $request['flight_no_to'];
+			}
+		} else {
+			$booking->house_no_to = $request['house_no_to'];
+		}
 		$booking->price = $request->input('price');
 		$booking->price1 = $request->input('price1');
 		$booking->mode = $request->input('mode');
@@ -1268,9 +1306,8 @@ $bookings = Booking::select('bookings.*',
 		$booking->min = $request->input('min');
 		$booking->customer = $request->input('customer');
 
-		$booking->pickup_address = $request->input('pickup_address');
-		$booking->pickup_date = $request->input('pickup_date');
-		$booking->pickup_time = $request->input('pickup_time');
+
+
 		$booking->return_flight = $request->input('return');
 		$booking->time_return_flight = $request->input('flight_time');
 		$booking->date_return_flight = $request->input('flight_date');
