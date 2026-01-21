@@ -200,7 +200,8 @@
             <tr class="retshow">
                 <td><b>Flight No</b></td>
                 <td>
-                    <input class="" type="text" name="flight_no" id="flight_no" placeholder="Flight No">
+                    <input class="" type="text" name="flight_no_on_return" id="flight_no_on_return"
+                        placeholder="" value="flight ">
                 </td>
             </tr>
             <tr class="retshow">

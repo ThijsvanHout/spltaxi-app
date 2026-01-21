@@ -389,8 +389,8 @@
                             <i class="bi bi-house-door-fill"></i>
                         </a>
                         <!--<a  href="{{ url('/admin/bookings/create') }}"  style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;" >
-                                                                                                               <i class="bi bi-plus-lg" ></i>
-                                                                                                              </a>-->
+                                                                                                                                                                                                                               <i class="bi bi-plus-lg" ></i>
+                                                                                                                                                                                                                              </a>-->
                         <a href="" id="add-booking"
                             style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;">
                             <i class="bi bi-plus-lg"></i>
@@ -471,8 +471,8 @@
 
 
                                                     <!-- <a href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-                                                                                                                      Return Booking
-                                                                                                                     </a> -->
+                                                                                                                                                                                                                                      Return Booking
+                                                                                                                                                                                                                                     </a> -->
                                                     <a href="#" class="cancel-booking"
                                                         data-booking-id="{{ $booking->id }}">Cancel</a>
 
@@ -481,11 +481,11 @@
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="copy-booking">Copy</a>
                                                     <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}">
-                                                                                                                      Copy</a>-->
+                                                                                                                                                                                                                                      Copy</a>-->
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="edit-booking">Edit</a>
                                                     <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                                                                                                                      >Edit</a>-->
+                                                                                                                                                                                                                                      >Edit</a>-->
                                                     <div class="user-receipt-dropdown">
                                                         <button type="button"
                                                             class="no-border-btn btn-block bg-gradient-primary"
@@ -509,13 +509,13 @@
                                                         </div>
                                                     </div>
                                                     <!--	<form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                                                                                                                      @csrf
-                                                                                                                      @method('DELETE')
-                                                                                                                      <a href="" type="submit"
-                                                                                                                       onclick="return confirm('Are you sure you want to delete this record?')">
-                                                                                                                       Delete
-                                                                                                                      </a>
-                                                                                                                     </form>  -->
+                                                                                                                                                                                                                                      @csrf
+                                                                                                                                                                                                                                      @method('DELETE')
+                                                                                                                                                                                                                                      <a href="" type="submit"
+                                                                                                                                                                                                                                       onclick="return confirm('Are you sure you want to delete this record?')">
+                                                                                                                                                                                                                                       Delete
+                                                                                                                                                                                                                                      </a>
+                                                                                                                                                                                                                                     </form>  -->
                                                 @endif
                                                 @if ($booking->status != 'pending')
                                                     @php
@@ -1096,13 +1096,15 @@
         const choiceSelect = document.getElementById('choice');
         const input1 = document.getElementById('flight_date');
         const input2 = document.getElementById('flight_time');
-        const input3 = document.getElementById('flight_no');
+        const input3 = document.getElementById('flight_no_on_return');
         const input4 = document.getElementById('returnremark');
+        const rethideSections = document.querySelectorAll('.rethide, .retshow');
 
         // Function to enable/disable and set required attribute
         function toggleInputValidation() {
             var shouldEnable = false;
-            const selectedValue = choiceSelect.value;
+            selectedValue = choiceSelect.value;
+
             if (selectedValue === 'Yes') {
                 input1.disabled = false;
                 input2.disabled = false;

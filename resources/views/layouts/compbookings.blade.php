@@ -425,8 +425,8 @@
                             <i class="bi bi-house-door-fill"></i>
                         </a>
                         <!--<a  href="{{ url('/admin/bookings/create') }}"  style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;" >
-               <i class="bi bi-plus-lg" ></i>
-              </a>-->
+                       <i class="bi bi-plus-lg" ></i>
+                      </a>-->
                         <a href="" id="add-booking"
                             style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;">
                             <i class="bi bi-plus-lg"></i>
@@ -438,17 +438,17 @@
                 <a href="{{ route('completedbookings') }}"><button class="btn-grad">Older Bookings</button></a>
 
                 <!--<form action="{{ route('bookings-filter') }}" method="POST" id="filterForm">
-             @csrf
-             <select name="chauffeur" id="chauffeur" class="dropbtn">
-              <option value="" class="dropdown-content" >Choose a driver</option>
-              @foreach ($drivers as $driver)
+                     @csrf
+                     <select name="chauffeur" id="chauffeur" class="dropbtn">
+                      <option value="" class="dropdown-content" >Choose a driver</option>
+                      @foreach ($drivers as $driver)
     <option value="{{ $driver->id }}">{{ $driver->name }}</option>
     @endforeach
-             </select>
-            </form>
-            
+                     </select>
+                    </form>
+                    
 
-            <a href="{{ route('onaccountcompbookings') }}"><button class="btn-grad">On Account</button></a>-->
+                    <a href="{{ route('onaccountcompbookings') }}"><button class="btn-grad">On Account</button></a>-->
                 <form action="{{ route('bookings-filterPeriod') }}" method="POST" id="filterPeriodForm">
                     @csrf
                     <table class="booktable" border="1">
@@ -618,18 +618,18 @@
                                                 <a href="#" class="cancel-booking"
                                                     data-booking-id="{{ $booking->id }}">Cancel</a>
                                                 <!-- <a href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-                     Return Booking
-                    </a> -->
+                             Return Booking
+                            </a> -->
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="return-booking">Return Booking</a>
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="copy-booking">Copy</a>
                                                 <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}">
-                     Copy</a>-->
+                             Copy</a>-->
                                                 <a href="" data-booking-id="{{ $booking->id }}"
                                                     class ="edit-booking">Edit</a>
                                                 <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                    >Edit</a>	-->
+                            >Edit</a>	-->
                                                 <div class="user-receipt-dropdown">
                                                     <button type="button"
                                                         class="no-border-btn btn-block bg-gradient-primary"
@@ -652,13 +652,13 @@
                                                     </div>
                                                 </div>
                                                 <!-- <form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                     @csrf
-                     @method('DELETE')
-                     <a href="" type="submit"
-                     onclick="return confirm('Are you sure you want to delete this record?')">
-                     Delete
-                     </a>
-                     </form> -->
+                             @csrf
+                             @method('DELETE')
+                             <a href="" type="submit"
+                             onclick="return confirm('Are you sure you want to delete this record?')">
+                             Delete
+                             </a>
+                             </form> -->
                                                 @php
                                                     $phone = '31' . ltrim($booking->driver_phone, '0');
                                                     $message =
@@ -1372,7 +1372,7 @@
         const choiceSelect = document.getElementById('choice');
         const input1 = document.getElementById('flight_date');
         const input2 = document.getElementById('flight_time');
-        const input3 = document.getElementById('flight_no');
+        const input3 = document.getElementById('flight_no_on_return');
         const input4 = document.getElementById('returnremark');
 
         // Function to enable/disable and set required attribute

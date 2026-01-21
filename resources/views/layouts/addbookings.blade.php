@@ -253,6 +253,7 @@
 <script>
     // Get the select element and input fields
     const choiceSelect = document.getElementById('choice');
+    alert(choiceSelect.value);
     if (!choiceSelect) {
         choiceSelect = document.getElementById('choice-copy');
     }

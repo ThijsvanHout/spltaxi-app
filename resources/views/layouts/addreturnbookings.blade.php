@@ -152,7 +152,7 @@
             <tr>
                 <td><b>Name</b></td>
                 <td colspan="1">
-                    <input type="text" required name="uname" value="{{ $booking->name }}" id="uname"
+                    <input type="text" name="uname" value="{{ $booking->name }}" id="uname"
                         class="form-control" placeholder="Enter Your Name">
                 </td>
             </tr>
