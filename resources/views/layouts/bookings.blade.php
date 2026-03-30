@@ -389,8 +389,8 @@
                             <i class="bi bi-house-door-fill"></i>
                         </a>
                         <!--<a  href="{{ url('/admin/bookings/create') }}"  style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;" >
-                                                                                                                                                                                                                               <i class="bi bi-plus-lg" ></i>
-                                                                                                                                                                                                                              </a>-->
+                                                                                                                                                                                                                                                                   <i class="bi bi-plus-lg" ></i>
+                                                                                                                                                                                                                                                                  </a>-->
                         <a href="" id="add-booking"
                             style="font-size:45px;padding : 10px 0px 10px 0px; margin-right:25px;">
                             <i class="bi bi-plus-lg"></i>
@@ -471,8 +471,8 @@
 
 
                                                     <!-- <a href="{{ url('/admin/bookings/' . $booking->id . '/retFlight') }}">
-                                                                                                                                                                                                                                      Return Booking
-                                                                                                                                                                                                                                     </a> -->
+                                                                                                                                                                                                                                                                          Return Booking
+                                                                                                                                                                                                                                                                         </a> -->
                                                     <a href="#" class="cancel-booking"
                                                         data-booking-id="{{ $booking->id }}">Cancel</a>
 
@@ -481,11 +481,11 @@
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="copy-booking">Copy</a>
                                                     <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/copy2') }}">
-                                                                                                                                                                                                                                      Copy</a>-->
+                                                                                                                                                                                                                                                                          Copy</a>-->
                                                     <a href="" data-booking-id="{{ $booking->id }}"
                                                         class ="edit-booking">Edit</a>
                                                     <!--<a href="{{ url('/admin/bookings/' . $booking->id . '/edit') }}"
-                                                                                                                                                                                                                                      >Edit</a>-->
+                                                                                                                                                                                                                                                                          >Edit</a>-->
                                                     <div class="user-receipt-dropdown">
                                                         <button type="button"
                                                             class="no-border-btn btn-block bg-gradient-primary"
@@ -498,24 +498,27 @@
                                                             @if ($booking->assign_id != '')
                                                                 <a
                                                                     href="{{ url('/user-receipt', $booking->assign_id) }}">WhatsApp</a>
-                                                                <a
-                                                                    href="{{ url('/user-receipt-email', $booking->assign_id) }}">E-mail</a>
+                                                                <a href=""
+                                                                    data-booking-id="{{ $booking->assign_id }}"
+                                                                    class="user-receipt-edit">E-mail</a>
+                                                                <!--   <a  href="{{ url('/user-receipt-edit', $booking->assign_id) }}">E-mail</a> -->
                                                             @else
                                                                 <a
                                                                     href="{{ url('/user-receipt-no-assign', $booking->id) }}">WhatsApp</a>
-                                                                <a
-                                                                    href="{{ url('/user-receipt-email-no-assign', $booking->id) }}">E-mail</a>
+                                                                <a href="" data-booking-id="{{ $booking->id }}"
+                                                                    class="user-receipt-edit-no-assign">E-mail</a>
+                                                                <!-- <a href="{{ url('/user-receipt-edit-no-assign', $booking->id) }}">E-mail</a> -->
                                                             @endif
                                                         </div>
                                                     </div>
                                                     <!--	<form method="POST" action="{{ url('/admin/bookings/' . $booking->id) }}">
-                                                                                                                                                                                                                                      @csrf
-                                                                                                                                                                                                                                      @method('DELETE')
-                                                                                                                                                                                                                                      <a href="" type="submit"
-                                                                                                                                                                                                                                       onclick="return confirm('Are you sure you want to delete this record?')">
-                                                                                                                                                                                                                                       Delete
-                                                                                                                                                                                                                                      </a>
-                                                                                                                                                                                                                                     </form>  -->
+                                                                                                                                                                                                                                                                          @csrf
+                                                                                                                                                                                                                                                                          @method('DELETE')
+                                                                                                                                                                                                                                                                          <a href="" type="submit"
+                                                                                                                                                                                                                                                                           onclick="return confirm('Are you sure you want to delete this record?')">
+                                                                                                                                                                                                                                                                           Delete
+                                                                                                                                                                                                                                                                          </a>
+                                                                                                                                                                                                                                                                         </form>  -->
                                                 @endif
                                                 @if ($booking->status != 'pending')
                                                     @php
@@ -824,6 +827,11 @@
         <br />
     </div>
 
+    <div id="userreceipt-section" style="display: none;">
+        @include('layouts.userreceiptedit')
+        <br />
+    </div>
+
 
     <!-- The Modal -->
     <div id="myModal" class="modal">
@@ -995,6 +1003,7 @@
             $("#example5").hide();
             $("#returnbooking-section").hide();
             $("#editbooking-section").hide();
+            $("#userreceipt-section").hide();
             $("#addbooking-section").show();
 
         });
@@ -1040,6 +1049,7 @@
             $("#example5").hide();
             $("#editbooking-section").hide();
             $("#addbooking-section").hide();
+            $("#userreceipt-section").hide();
             $("#returnbooking-section").show();
             // Voer AJAX-verzoek uit om de pagina met de boeking weer te geven
             $.get(url, function(data) {
@@ -1061,6 +1071,8 @@
             $("#example5").hide();
             $("#addbooking-section").hide();
             $("#returnbooking-section").hide();
+            $("#user-receipt-edit-section").hide();
+            $("#userreceipt-section").hide();
             $("#editbooking-section").show();
             // Voer AJAX-verzoek uit om de pagina met de boeking weer te geven
             $.get(url, function(data) {
@@ -1082,6 +1094,7 @@
             $("#addbooking-section").hide();
             $("#returnbooking-section").hide();
             $("#editbooking-section").hide();
+            $("#userreceipt-section").hide();
             $("#copybooking-section").show();
             // Voer AJAX-verzoek uit om de pagina met de boeking weer te geven
             $.get(url, function(data) {
@@ -1090,6 +1103,49 @@
 
         });
 
+        $(".user-receipt-edit").click(function(event) {
+            event.preventDefault();
+
+            // Scrollpositie opslaan in localStorage
+            localStorage.setItem('scrollBookings', window.scrollY);
+            localStorage.setItem('activeCompleted', 'Active');
+
+            var bookingId = $(this).data('booking-id');
+            var url = "/user-receipt-edit/" + bookingId + "?tab=active";
+            $("#example5").hide();
+            $("#addbooking-section").hide();
+            $("#returnbooking-section").hide();
+            $("#editbooking-section").hide();
+            $("#copybooking-section").hide();
+            $("#userreceipt-section").show();
+            // Voer AJAX-verzoek uit om de pagina met de boeking weer te geven
+            $.get(url, function(data) {
+                $("#userreceipt-section").html(data);
+            });
+
+        });
+
+        $(".user-receipt-edit-no-assign").click(function(event) {
+            event.preventDefault();
+
+            // Scrollpositie opslaan in localStorage
+            localStorage.setItem('scrollBookings', window.scrollY);
+            localStorage.setItem('activeCompleted', 'Active');
+
+            var bookingId = $(this).data('booking-id');
+            var url = "/user-receipt-edit-no-assign/" + bookingId + "?tab=active";
+            $("#example5").hide();
+            $("#addbooking-section").hide();
+            $("#returnbooking-section").hide();
+            $("#editbooking-section").hide();
+            $("#copybooking-section").hide();
+            $("#userreceipt-section").show();
+            // Voer AJAX-verzoek uit om de pagina met de boeking weer te geven
+            $.get(url, function(data) {
+                $("#userreceipt-section").html(data);
+            });
+
+        });
 
 
         // Get the select element and input fields

@@ -1462,31 +1462,65 @@ $bookings = Booking::select('bookings.*',
 		return view('frontend.userreceipt', compact('booking'));
 	}
 
-	public function userReceiptMail($request)
+	public function showUserReceiptMail($id)
 	{
+		$prices = Prices_per_city::all();
+
+		$booking = Booking::select(
+			'bookings.*',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time'
+		)
+			->where('bookings.id', '=', $id)
+			->first();
+		return view('layouts.userreciptedit', compact('booking'));
+	}
+
+	public function userReceiptEdit($id)
+	{
+		$prices = Prices_per_city::all();
+
+		$booking = Booking::select(
+			'bookings.*',
+			'bookings.pickup_date as date',
+			'bookings.pickup_time as time'
+		)
+			->where('bookings.id', '=', $id)
+			->first();
+
+		return view('layouts.userreceiptedit', compact('booking'));
+	}
+
+	public function userReceiptMail(Request $request)
+	{
+		$booking = new Booking();
 		$booking->name = $request->input('name');
 		$booking->pickup_address = $request->input('pickup_address');
 		$booking->destination = $request->input('destination');
 		$booking->press = $request->input('press');
 		$booking->pickup_date = $request->input('pickup_date');
 		$booking->pickup_time = $request->input('pickup_time');
-		$booking->price1 = $request_input('price1');
+		$booking->price1 = $request->input('price1');
 
 		try {
-			Mail::send('layouts.userreceiptemail', ['booking' => $booking], function ($message) use ($request) {
-				$message->to($request->input('email'))
-					->cc('info@spl.taxi')
-					->attachData($docxContent, 'receipt.docx', [
-						'mime' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-					])
-					->subject('Booking receipt');
+			$email = $request->email;
+			Mail::send('layouts.userreceiptemail', ['booking' => $booking], function ($message) use ($booking, $email, $request) {
+				$message->to($email)
+					->subject('Bevestiging van je boeking');
 			});
+
+			$tab = $request->get('tab');  // 'active' of 'completed'
+
+			if ($tab === 'completed') {
+				return redirect()->route('completed-bookings.index')
+					->with('success', 'Booking receipt is verzonden!');  //redirect naar url /admin/bookings
+			}
 
 			return redirect('/admin/bookings')
 				->with('success', 'Booking receipt is verzonden!');  //redirect naar url /admin/bookings
 		} catch (\Exception $e) {
 			// Log het probleem
-			Log::error('❌ Mailfout: ' . $e->getMessage());
+			//Log::error('❌ Mailfout: ' . $e->getMessage());
 
 			// Geef fout terug in het scherm (alleen in ontwikkelomgeving!)
 			return response()->json([

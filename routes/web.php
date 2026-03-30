@@ -177,7 +177,7 @@ Route::get('user-confirmation/{assign_id}', [DriverBookingController::class, 'sh
 Route::get('user-receipt/{assign_id}', [DriverBookingController::class, 'showUserReceipt'])->name('user-receipt');
 Route::get('user-receipt-no-assign/{id}', [BookingController::class, 'showUserReceipt'])->name('user-receipt');
 Route::get('user-receipt-email/{assign_id}', [DriverBookingController::class, 'userReceiptEmail'])->name('user-receipt-email');
-Route::get('user-receipt-email-no-assign/{id}', [BookingController::class, 'userReceiptMail'])->name('user-receipt-email');
+Route::post('user-receipt-email-no-assign', [BookingController::class, 'userReceiptMail'])->name('user-receipt-email2');
 Route::get('user-receipt-edit/{assign_id}', [DriverBookingController::class, 'userReceiptEdit'])->name('user-receipt-edit');
 Route::get('user-receipt-edit-no-assign/{id}', [BookingController::class, 'userReceiptEdit'])->name('user-receipt-edit');
 Route::post('/driver-confirmation/{assign_id}/response', [DriverBookingController::class, 'respondBooking'])->name('driver-confirmation-response');
