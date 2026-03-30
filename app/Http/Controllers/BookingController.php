@@ -207,6 +207,8 @@ $bookings = Booking::select('bookings.*',
 
 		/*$bookingDetails = $request->all();*/
 		$bookingDetails = $request->except(['price1']);
+		$bookingDetails['house_no_from'] = $bookings['house_no_from'];
+		$bookingDetails['house_no_to'] = $bookings['house_no_to'];
 		Mail::to($request->input('email'))->cc('info@spl.taxi')->send(new BookingConfirmation($bookingDetails));
 		Session::flash('success', 'Booking created successfully!');
 

@@ -23,14 +23,14 @@
         <p><strong>Luggage:</strong> {{ $bookingDetails['luggage'] }}</p>
     @endif
     <p><strong>Vehicle:</strong> {{ $bookingDetails['vehicle'] }}</p>
-    @if (preg_match('/^House no *$/', $bookingDetails['house_no_from']))
+    @if (trim($bookingDetails['house_no_from']) === 'House no')
         <p><strong>From:</strong> {{ $bookingDetails['pickup_address'] }}</p>
     @else
         <p><strong>From:</strong> {{ $bookingDetails['pickup_address'] }}
             {{ $bookingDetails['house_no_from'] }}</p>
     @endif
 
-    @if (preg_match('/^House no *$/', $bookingDetails['house_no_to']))
+    @if (trim($bookingDetails['house_no_to']) === 'House no')
         <p><strong>To:</strong> {{ $bookingDetails['to'] }}</p>
     @else
         <p><strong>To:</strong> {{ $bookingDetails['to'] }} {{ $bookingDetails['house_no_to'] }}</p>
