@@ -253,13 +253,13 @@
 <script>
     // Get the select element and input fields
     const choiceSelect = document.getElementById('choice');
-    alert(choiceSelect.value);
+ 
     if (!choiceSelect) {
         choiceSelect = document.getElementById('choice-copy');
     }
     const input1 = document.getElementById('flight_date');
     const input2 = document.getElementById('flight_time');
-    const input3 = document.getElementById('flight_no');
+    const input3 = document.getElementById('flight_no_on_return');
     const input4 = document.getElementById('returnremark');
 
     // Function to enable/disable and set required attribute

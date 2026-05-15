@@ -9,7 +9,8 @@
     <h1>Booking Confirmation</h1>
     <p>Thank you for your booking. Here are the details:</p>
 
-    <p><strong>Date, Time:</strong> {{ $bookingDetails['pickup_date'] }} at {{ $bookingDetails['pickup_time'] }}</p>
+    <p><strong>Date, Time:</strong> {{ \Carbon\Carbon::parse($bookingDetails['pickup_date'])->format('l d-m-y') }} at
+        {{ $bookingDetails['pickup_time'] }}</p>
 
 
     @if (preg_match('/^Pax *$/', $bookingDetails['press']))
