@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 
 <head>
@@ -42,8 +42,12 @@
         {{ $bookingDetails['price'] }}
 
     </p>
-
-    <p><strong>Payment Mode:</strong> {{ $bookingDetails['mode'] }}</p>
+    @if($bookingDetails['mode'] === "Pin Payment")
+        <p><strong>Payment Mode:</strong> Pin / Cash</p>
+    @else
+        <p><strong>Payment Mode:</strong> {{ $bookingDetails['mode'] }}</p>
+    @endif
+    
     @isset($bookingDetails['email'])
         <p><strong>Contact Info:</strong> Mobile: {{ $bookingDetails['mobile'] }}, Email: {{ $bookingDetails['email'] }},
             Name: {{ $bookingDetails['uname'] }}</p>

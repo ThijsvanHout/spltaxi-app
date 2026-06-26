@@ -264,15 +264,20 @@
         position: absolute;
         background-color: #f9f9f9;
         min-width: 160px;
+        max-height: 70vh;
+        overflow-y: auto;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        z-index: 1;
+        z-index: 1001;
+        top:100%;
         left: 0;
     }
 
-    .dropdown:hover .dropdown-content {
-        display: block;
+    .dropdown-content.open-up {
+        top: auto;
+        bottom: 100%;
     }
 
+    
     /* Stijl voor de knop en dropdown-opties */
     .dropdown button {
         background-color: #DD0000;
@@ -450,7 +455,7 @@
                                     <td>
                                         <div class="dropdown">
                                             <button class="dropdown-button">&#8226;&#8226;&#8226;</button>
-                                            <div class="dropdown-content" hidden>
+                                            <div class="dropdown-content dropdown-menu" hidden>
                                                 <!-- Dropdown-opties als links -->
                                                 @if ($booking->status != 'Completed')
                                                     @if (($booking->status == 'pending' && $booking->assign_id == '') || $booking->status == 'Rejected')
@@ -1435,6 +1440,34 @@
                 localStorage.removeItem('scrollBookings');
             }
         });
+
+        $('.dropdown').hover(
+            function () {
+
+                const $menu = $(this).find('.dropdown-content');
+
+                // eerst tonen zodat hoogte klopt
+                $menu.show();
+
+                // nu pas meten
+                const buttonRect = this.getBoundingClientRect();
+                const menuHoogte = $menu.outerHeight();
+
+                const ruimteOnder = window.innerHeight - buttonRect.bottom;
+
+                if (ruimteOnder < menuHoogte) {
+                    $menu.addClass('open-up');
+                } else {
+                    $menu.removeClass('open-up');
+                }
+
+            },
+            function () {
+                $(this).find('.dropdown-content')
+                    .hide()
+                    .removeClass('open-up');
+            }
+        );
     </script>
 
 @section('footer-scripts')

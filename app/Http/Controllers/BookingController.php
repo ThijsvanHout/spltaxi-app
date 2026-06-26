@@ -1910,6 +1910,12 @@ $bookings = Booking::select('bookings.*',
 
 		$driver = Driver::find($chauffeur);
 		$pickupDate = \Carbon\Carbon::parse($booking->pickup_date);
+		if($booking->mode === "Pin Payment"){
+			$mode = "Pin / Cash";
+		}
+		else {
+			$mode = $booking->mode;
+		}
 		$message =  "Hallo " . $driver->name . "," . "\n\nDeze rit is aan jou toegewezen: " .
 			"\n\n*Datum:* " . $pickupDate->format('D') . " " . $pickupDate->format('d-m-Y') .
 			"\n*Tijd:* " . $booking->pickup_time .
@@ -1922,7 +1928,7 @@ $bookings = Booking::select('bookings.*',
 			"\n*Bedrijf:* " . $booking->company .
 			"\n*Prijs:* " . $booking->price .
 			"\n*Code:* " . $booking->price1 .
-			"\n*Mode:* " . $booking->mode .
+			"\n*Mode:* " . $mode .
 			"\n*Pax:* " . $booking->press .
 			"\n*Bagage:* " . $booking->luggage .
 			"\n*Voertuig:* " . ($booking->vehicle ?? '') .

@@ -286,16 +286,6 @@
         display: block;
     }
 
-    /* Style the dropdown content (hidden by default) */
-    .dropdown-content {
-
-        position: absolute;
-        background-color: #DD0000;
-        min-width: 160px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-    }
-
     /* drodpwon action */
     .dropdown {
         position: relative;
@@ -307,13 +297,17 @@
         position: absolute;
         background-color: #f9f9f9;
         min-width: 160px;
+        max-height: 70vh;
+        overflow-y: auto;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        z-index: 1;
+        z-index: 1001;
+        top:100%;
         left: 0;
     }
 
-    .dropdown:hover .dropdown-content {
-        display: block;
+    .dropdown-content.open-up {
+        top: auto;
+        bottom: 100%;        
     }
 
     /* Stijl voor de knop en dropdown-opties */
@@ -1626,6 +1620,34 @@
                 localStorage.removeItem('scrollBookings');
             }
         });
+
+        $('.dropdown').hover(
+            function () {
+
+                const $menu = $(this).find('.dropdown-content');
+
+                // eerst tonen zodat hoogte klopt
+                $menu.show();
+
+                // nu pas meten
+                const buttonRect = this.getBoundingClientRect();
+                const menuHoogte = $menu.outerHeight();
+
+                const ruimteOnder = window.innerHeight - buttonRect.bottom;
+
+                if (ruimteOnder < menuHoogte) {
+                    $menu.addClass('open-up');
+                } else {
+                    $menu.removeClass('open-up');
+                }
+
+            },
+            function () {
+                $(this).find('.dropdown-content')
+                    .hide()
+                    .removeClass('open-up');
+            }
+        );
     </script>
 
 
