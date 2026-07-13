@@ -58,8 +58,12 @@
 
     <p><strong>Return Booking:</strong> {{ $bookingDetails['return'] }}</p>
     @if ($bookingDetails['return'] == 'Yes')
-        <p><strong>Flight Details:</strong> No: {{ $bookingDetails['flight_no_on_return'] }}, Date:
-            {{ $bookingDetails['flight_date'] }}, Time: {{ $bookingDetails['flight_time'] }}</p>
+        <p><strong>Flight Details:</strong> </p> 
+        <p>{{ $bookingDetails['flight_no_on_return'] }}</p> 
+        <p> Date: {{ $bookingDetails['flight_date'] }}, Time: {{ $bookingDetails['flight_time'] }}</p>
+        <p>Price:
+            Customer: {{ $bookingDetails['price'] }}    
+        </p>
     @endif
     <p><strong>Remark:</strong> {{ $bookingDetails['remark'] }}</p>
 
