@@ -552,6 +552,7 @@
                         <th width="">Mobile</th>
                         <th width="">Name</th>
                         <th width="">Price</th>
+                        <th width="">Code</th>
                         <th>Pax</th>
                         <th>Luggage</th>
                         <th width="">Vehicle Type</th>
@@ -752,7 +753,6 @@
 										border: 1px solid #ccc;
 										color : red;">
                                     <b>{{ $booking->price }}</b>
-                                    <hr>{{ $booking->price1 }}
                                     <hr>{{ $booking->mode }}
                                 </td>
                             @else
@@ -761,10 +761,12 @@
 										padding: 10px; 
 										border: 1px solid #ccc;">
                                     <b>{{ $booking->price }}</b>
-                                    <hr>{{ $booking->price1 }}
                                     <hr>{{ $booking->mode }}
                                 </td>
                             @endif
+                            <td style="width: 4% !important; 
+										padding: 10px; 
+										border: 1px solid #ccc;">{{ $booking->price1 }}</td>
                             <!--no passengers-->
                             <td
                                 style="width: 2% !important; whitespace:normal; 
