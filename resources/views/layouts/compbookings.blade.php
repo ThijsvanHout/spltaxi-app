@@ -373,6 +373,11 @@
             margin-left: 75%;
         }
     }
+
+    .last-row-of-day td {
+        border-bottom: 4px solid red !important;
+    }
+    // #7c7a7a;
 </style>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @section('main-section')
@@ -381,6 +386,12 @@
             {{ Session::get('success') }}
         </div>
     @endif
+
+    @php
+        $previousDate = null;
+        $dayIndex = -1;
+    @endphp
+
 
     <div class="header-container">
         <!-- Welkomstbericht -->
@@ -578,10 +589,16 @@
                         @php
                             $pickupDate = \Carbon\Carbon::parse($booking->pickup_date);
                             $return = \Carbon\Carbon::parse($booking->return_pickup_date);
+                            $currentDate = $booking->date;
 
+                            $nextDate = !$loop->last
+                                ? $bookings[$loop->index + 1]->date
+                                : null;
+
+                            $isLastRowOfDay = $loop->last || $currentDate != $nextDate;
                         @endphp
 
-                        <tr>
+                        <tr   class="{{ $isLastRowOfDay ? 'last-row-of-day' : '' }}">
                             @if (Auth::guard('admin')->check())
                                 @if (Auth::guard('admin')->user()->role === 'Admin')
                                     <td>

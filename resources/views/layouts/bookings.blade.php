@@ -346,6 +346,10 @@
             /* iPhone / smaller screen */
         }
     }
+
+    .last-row-of-day td {
+        border-bottom: 4px solid red !important;
+    }
 </style>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @section('main-section')
@@ -355,6 +359,12 @@
             {{ Session::get('success') }}
         </div>
     @endif
+
+    @php
+        $previousDate = null;
+        $dayIndex = -1;
+    @endphp
+
 
     <div class="header-container">
         <!-- Welkomstbericht -->
@@ -448,9 +458,16 @@
                         @php
                             $pickupDate = \Carbon\Carbon::parse($booking->pickup_date);
                             $return = \Carbon\Carbon::parse($booking->date_return_flight);
+                            $currentDate = $booking->date;
+
+                            $nextDate = !$loop->last
+                                ? $bookings[$loop->index + 1]->date
+                                : null;
+
+                            $isLastRowOfDay = $loop->last || $currentDate != $nextDate;
                         @endphp
 
-                        <tr>
+                        <tr class="{{ $isLastRowOfDay ? 'last-row-of-day' : '' }}">
                             @if (Auth::guard('admin')->check())
                                 @if (Auth::guard('admin')->user()->role === 'Admin')
                                     <td>
@@ -605,7 +622,7 @@
                                 <hr>{{ $booking->pickup_time }}
                             </td>
                             <!--from to-->
-                            <td class="nowrap"
+                            <td
                                 style="width: 12% !important; 
 									   padding: 10px; 
 									   border: 1px solid #ccc;">
@@ -647,7 +664,8 @@
                                     <hr>{{ $booking->mode }}
                                 </td>
                             @endif
-                            <td  style="width: 4% !important; 
+                            <td 
+                                style="width: 4% !important; 
 											   padding: 10px; 
 											   border: 1px solid #ccc;">{{ $booking->price1 }}</td>
                             <!--no of passengers-->
@@ -750,14 +768,16 @@
                                         </form>
                                     </td>
                                     <!--driver link-->
-                                    <td style="display:none">
+                                    <td
+                                        style="display:none">
                                         @if ($booking->assign_id != '')
                                             <a href="{{ url('/driver-confirmation', $booking->assign_id) }}">Confirmation
                                                 Link 1</a>
                                         @endif
                                     </td>
                                     <!--user link-->
-                                    <td style="display:none">
+                                    <td
+                                        style="display:none">
                                         @if ($booking->assign_id != '' && $booking->status == 'Accepted')
                                             <a href="{{ url('/user-confirmation', $booking->assign_id) }}">Confirmation
                                                 Link 2</a>
