@@ -350,6 +350,24 @@
     .last-row-of-day td {
         border-bottom: 4px solid red !important;
     }
+
+    .betaald {
+        color: white;
+        background-color: #009933;
+        border: 1px solid black;
+        padding: 4px;
+        border-radius: 4px;
+		font-weight:bold;
+    }
+
+    .niet-betaald {
+        color: white;
+        background-color: red;
+        border: 1px solid black;
+        padding: 4px;
+        border-radius: 4px;
+		font-weight:bold;
+    }
 </style>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @section('main-section')
@@ -664,10 +682,19 @@
                                     <hr>{{ $booking->mode }}
                                 </td>
                             @endif
-                            <td 
-                                style="width: 4% !important; 
-											   padding: 10px; 
-											   border: 1px solid #ccc;">{{ $booking->price1 }}</td>
+                            <td style="width: 4% !important; 
+										padding: 10px; 
+										border: 1px solid #ccc;
+                                        
+                            " > <span @if($booking->betaald)
+                                                class="betaald"
+                                            @else
+                                                class="niet-betaald"
+                                            @endif> 
+                            
+                                        {{ $booking->price1 }} </span> 
+                            </td>
+                            
                             <!--no of passengers-->
                             <td
                                 style="width: 2% !important; 

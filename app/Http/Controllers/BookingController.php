@@ -1303,6 +1303,8 @@ $bookings = Booking::select('bookings.*',
 		}
 		$booking->price = $request->input('price');
 		$booking->price1 = $request->input('price1');
+		$booking->betalingsVerzoekVerstuurd = $request->input('betalingsVerzoekVerstuurd');
+		$booking->betaald = $request->input('betaald');
 		$booking->mode = $request->input('mode');
 		$booking->km = $request->input('km');
 		$booking->min = $request->input('min');
@@ -1316,7 +1318,6 @@ $bookings = Booking::select('bookings.*',
 		$booking->press = $request->input('press');
 		$booking->luggage = $request->input('luggage');
 		$booking->vehicle = $request->input('vehicle');
-
 		//driver ingevuld, nnieuw of update
 		/*	if ($request->input('driver_id') !== null){	
 			$driverBooking = DriverBooking::where('booking_id', $request->id)->first();
@@ -1405,9 +1406,11 @@ $bookings = Booking::select('bookings.*',
 
 	public function completedBookings()
 	{
-		$twoMonthsAgo = Carbon::now()->subMonths(2)->toDateString();
+		
+		$twoMonthsAgo = Carbon::now()->subMonths(12)->toDateString();
 		$yesterday = Carbon::yesterday();
 		$datetoday = $yesterday->toDateString();
+		try{
 		$bookings = Booking::select('bookings')
 			->select(
 				'bookings.*',
@@ -1427,6 +1430,10 @@ $bookings = Booking::select('bookings.*',
 			->orderBy('bookings.pickup_date', 'DESC')
 			->orderBy('bookings.pickup_time', 'DESC')
 			->get();
+		}
+		catch (\Throwable $e) {
+			dd($e->getMessage());
+		}
 		//$drivers = Driver::all();
 		$drivers = Driver::orderBy('order', 'asc')->get();
 		$companies = Company::all();

@@ -18,6 +18,14 @@
         /* mobiel safari */
         appearance: none;
     }
+
+    .table input[type="checkbox"] {
+        width: auto;
+        -webkit-appearance: auto;
+        appearance: auto;
+    }
+
+ 
 </style>
 
 <div class="container table-responsive">
@@ -105,6 +113,25 @@
                 <td><input type="text" name="price1" id="price1"
                         value="{{ $booking->price1 === null || $booking->price1 === '' ? 'Code € ' : $booking->price1 }}"
                         placeholder="Code € " class="form-control">
+                </td>
+            </tr><!-- 
+            <tr>
+                <td><b>Datum betalings verzoek verstuurd</b>
+                <td><input type="date" name="betalingsVerzoekVerstuurd" id="betalingsVerzoekVerstuurd" 
+                           value="{{ $booking->betalingsVerzoekVerstuurd }}"
+                           class="form-control datepicker">
+            </tr> -->
+            <tr>
+                <td><b>Betaald door chauffeur</b></td>
+                <<td>
+                    <select name="betaald" id="betaald" class="form-control">
+                        <option value="0" {{ old('betaald', $booking->betaald) == 0 ? 'selected' : '' }}>
+                            Nee
+                        </option>
+                        <option value="1" {{ old('betaald', $booking->betaald) == 1 ? 'selected' : '' }}>
+                            Ja
+                        </option>
+                    </select>
                 </td>
             </tr>
             <tr>
